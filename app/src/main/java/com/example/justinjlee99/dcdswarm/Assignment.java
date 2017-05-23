@@ -5,15 +5,28 @@ package com.example.justinjlee99.dcdswarm;
  */
 
 public class Assignment {
-    String title,subtitle, detail;
+    String className, title, description;
 
-    public Assignment(String title, String subtitle, String detail) {
+    public Assignment(String className, String title, String description) {
+        this.className = className;
         this.title = title;
-        this.subtitle = subtitle;
-        this.detail = detail;
+        this.description = description;
     }
     public Assignment(String[] items)
     {
         this(items[0],items[1],items[2]);
+    }
+
+    public String[] values() {
+        return new String[] {className, title, description};
+    }
+
+    @Override
+    public String toString() {
+        return "Activity{" +
+                "name='" + className + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }
