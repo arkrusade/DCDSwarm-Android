@@ -49,21 +49,22 @@ public class AssignmentAdapter extends BaseAdapter {
         View rowView = mInflater.inflate(R.layout.list_item_assignment, parent, false);
 
         // Get title element
+        TextView nameTextView =
+                (TextView) rowView.findViewById(R.id.recipe_list_name);
+
+// Get description element
         TextView titleTextView =
                 (TextView) rowView.findViewById(R.id.recipe_list_title);
 
-// Get subtitle element
-        TextView subtitleTextView =
-                (TextView) rowView.findViewById(R.id.recipe_list_subtitle);
-
 // Get detail element
-        TextView detailTextView =
-                (TextView) rowView.findViewById(R.id.recipe_list_detail);
+        TextView descTextView =
+                (TextView) rowView.findViewById(R.id.recipe_list_desc);
 
         Assignment a = (Assignment) getItem(position);
+
+        nameTextView.setText(a.className);
         titleTextView.setText(a.title);
-        subtitleTextView.setText(a.subtitle);
-        detailTextView.setText(a.detail);
+        descTextView.setText(a.description);
 
         return rowView;
     }

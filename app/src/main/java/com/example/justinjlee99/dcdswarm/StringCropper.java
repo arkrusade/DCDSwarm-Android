@@ -1,43 +1,54 @@
 package com.example.justinjlee99.dcdswarm;
 
-/**
- * Created by justinjlee99 on 5/16/2017.
- */
 
-class StringCropper {
-    static String crop(String input, String start) throws StringIndexOutOfBoundsException {
+import android.support.annotation.Nullable;
+
+public class StringCropper {
+    static String crop(@Nullable String input, @Nullable String start) {
+        if (input == null || start == null)
+            return null;
         int index = input.indexOf(start);
         if (index < 0 || index >= input.length()) {
-            throw new StringIndexOutOfBoundsException("Start String not contained within input");
-        } else return input.substring(index);
+            return null;
+        } else
+            return input.substring(index);
     }
 
-    static String cropExclusive(String input, String start) throws StringIndexOutOfBoundsException {
+    static String cropExclusive(@Nullable String input, @Nullable String start) {
+        if (input == null || start == null)
+            return null;
         int index = input.indexOf(start);
         if (index < 0 || index >= input.length()) {
-            throw new StringIndexOutOfBoundsException("Start String not contained within input");
-        } else return input.substring(index + start.length());
+            return null;
+        } else
+            return input.substring(index + start.length());
     }
 
-    static String cropEnd(String input, String end) throws StringIndexOutOfBoundsException {
+    static String cropEnd(@Nullable String input, @Nullable String end) {
+        if (input == null || end == null)
+            return null;
         int index = input.indexOf(end);
         if (index < 0 || index >= input.length()) {
-            throw new StringIndexOutOfBoundsException("End String not contained within input");
-        } else return input.substring(0, index + end.length());
+            return null;
+        } else
+            return input.substring(0, index + end.length());
     }
 
-    static String cropEndExclusive(String input, String end) throws StringIndexOutOfBoundsException {
+    static String cropEndExclusive(@Nullable String input, @Nullable String end) {
+        if (input == null || end == null)
+            return null;
         int index = input.indexOf(end);
         if (index < 0 || index >= input.length()) {
-            throw new StringIndexOutOfBoundsException("End String not contained within input");
-        } else return input.substring(0, index);
+            return null;
+        } else
+            return input.substring(0, index);
     }
 
-    static String crop(String input, String start, String end) throws StringIndexOutOfBoundsException {
+    static String crop(@Nullable String input, @Nullable String start, @Nullable String end) {
         return cropEnd(crop(input, start), end);
     }
 
-    static String cropExclusive(String input, String start, String end) throws StringIndexOutOfBoundsException {
+    static String cropExclusive(@Nullable String input, @Nullable String start, @Nullable String end) {
         return cropEndExclusive(cropExclusive(input, start), end);
     }
 }

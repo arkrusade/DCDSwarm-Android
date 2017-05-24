@@ -4,53 +4,43 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.StringTokenizer;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import static com.example.justinjlee99.dcdswarm.DateExtension.getDateExtension;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
     ListView mListView;
     TextView mTestTextView;
-    HttpURLConnection portal;
-    ArrayList<Assignment> assignments = new ArrayList<>();
-
+    PortalDay portalDay = new PortalDay();
+    AsyncTask request;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
-        String username = intent.getStringExtra(LoginActivity.USERNAME_PARAMETER);
-        String pass = intent.getStringExtra(LoginActivity.PASSWORD_PARAMETER);
-
+        intent.getExtras();
+        String username = intent.getExtras().get(LoginActivity.USERNAME_PARAMETER).toString();
+        String pass = intent.getExtras().get(LoginActivity.PASSWORD_PARAMETER).toString();
+        
         mListView = (ListView) findViewById(R.id.listView);
         downloadAssignments(username, pass);
-        AssignmentAdapter adapter = new AssignmentAdapter(this, assignments);
-        mListView.setAdapter(adapter);
+        
+        mTestTextView = (TextView) findViewById(R.id.textView);
 
-
-        // Capture the layout's TextView and set the string as its text
-        TextView textView = (TextView) findViewById(R.id.textView);
-        textView.setText(username);
 //
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
@@ -65,98 +55,141 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 //        });
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
+    
     public void downloadAssignments(String username, String password) {
-        ArrayList<String[]> names = new ArrayList();
-
-//        for (int i = 0; i < 20; i++) {
-//            names.add(new String[3]);
-//            for (int j = 0; j < 3; j++) {
-//                names.get(i)[j] = String.format(Locale.getDefault(), "%d%d", i, j);
-//            }
-//            assignments.add(new Assignment(names.get(i)));
-//        }
-
-
-        //TODO:
+//        request.cancel(true);
         try {
-            String[] params = {"https://www.dcds.edu/userlogin.cfm?pp=8256&userrequest=YES&keyrequest=false&userpage=8253", username, password};
-            PortalLoginTask portalTask = new PortalLoginTask(this);
-            portalTask.execute(params);
-        }
-        catch (Exception e) {
+            String[] params = {getString(R.string.URL_scheduleRequest), username, password};
+            request = new PortalLoginTask(this);
+            request.execute(params);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
+    
     @Override
     public void processFinish(String output) {
-        System.out.println(output);
-        //TODO: process assignment string into objects
+        if (output == null)
+            return;
+        this.portalDay = HtmlStringHelper.processCalendarString(output);
+        mTestTextView.setText(getDateExtension().dateToString(this.portalDay.date));
+        
+        AssignmentAdapter adapter = new AssignmentAdapter(this, portalDay.assignments);
+        mListView.setAdapter(adapter);
+    }
+    
+    public void tomorrow(View view) {
+        changePortalDate(getDateExtension().tomorrow(portalDay.date));
+    }
+    
+    public void changePortalDate(Date newDate) {
+//        request.cancel(true);
+        request = new PortalDayTask(this).execute(newDate);
     }
 
-    public boolean loginToPortal(String username, String password) {
-        portal = null;
-        try {
-
-            PortalLoginTask task = new PortalLoginTask(this);
-            String[] asdf = {"https://www.dcds.edu/userlogin.cfm?pp=8256&userrequest=YES&keyrequest=false&userpage=8253", username, password};
-            String result = task.execute(asdf).get();
-
-
-            return true;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-
-    }
-
-
-    private class PortalLoginTask extends AsyncTask<String, Integer, String> {
-        //TODO: better input
-
+//    public boolean loginToPortal(String username, String password) {
+//        portal = null;
+//        try {
+//
+//            PortalLoginTask task = new PortalLoginTask(this);
+//            String[] asdf = {"https://www.dcds.edu/userlogin.cfm?pp=8256&userrequest=YES&keyrequest=false&userpage=8253", username, password};
+//            String result = task.execute(asdf).get();
+//
+//
+//            return true;
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//
+//    }
+    
+    private class PortalDayTask extends AsyncTask<Date, Void, String> {
+        HttpURLConnection portal;
+        Date requestDate;
         private AsyncResponse delegate = null;
-
-        private static final String DATE_FORMAT = "EEE, dd-MMM-yyyy hh:mm:ss z";
-        private DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-
+        
+        public PortalDayTask(AsyncResponse activity) {
+            this.delegate = activity;
+        }
+        
+        @Override
+        protected String doInBackground(Date... params) {
+            try {
+                requestDate = params[0];
+                
+                URL url = new URL(String.format(getString(R.string.URL_scheduleDay)+"&start=%s&period=day",getDateExtension().dateToString(requestDate)));
+                portal = (HttpURLConnection) url.openConnection();
+                portal.setRequestMethod("GET");
+                
+                portal.setConnectTimeout(3000);
+                CookieManager.getInstance().setCookies(portal);
+//                portal.setRequestProperty(getString(R.string.requestHeader_Cookie), cookieStringBuffer.toString());
+                portal.setConnectTimeout(3000);
+                portal.setReadTimeout(3000);
+                portal.setDoInput(true);
+                portal.setDoOutput(true);
+                
+//                String urlParameters = String.format("p=8256&start=%s&period=day", getDateExtension().dateToString(requestDate));
+//                portal.setRequestProperty("Content-Length", Integer.toString(urlParameters.length()));
+                
+                
+                //Send params
+//                DataOutputStream wr = new DataOutputStream(portal.getOutputStream());
+//                wr.writeBytes(urlParameters);
+//                wr.flush();
+//                wr.close();
+                
+                int responseCode = portal.getResponseCode();
+                CookieManager.getInstance().storeCookies(portal);
+                
+                BufferedReader in = new BufferedReader(new InputStreamReader(portal.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+                
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+                
+                if (responseCode != HttpsURLConnection.HTTP_OK) {
+                    return responseCode + "";
+                }
+                
+                
+                return response.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (portal != null) {
+                    portal.disconnect();
+                }
+            }
+            return null;
+        }
+        
+        @Override
+        protected void onPostExecute(String s) {
+            delegate.processFinish(s);
+        }
+    }
+    
+    private class PortalLoginTask extends AsyncTask<String, Integer, String> {
+        HttpURLConnection portal;
+        
+        private AsyncResponse delegate = null;
+        
+        
         public PortalLoginTask(AsyncResponse activity) {
             delegate = activity;
         }
-
-        private boolean isNotExpired(String cookieExpires) {
-            if (cookieExpires == null) {
-                return true;
-            }
-            Date now = new Date();
-            try {
-                return (now.compareTo(dateFormat.parse(cookieExpires))) <= 0;
-            }
-            catch (java.text.ParseException pe) {
-                pe.printStackTrace();
-                return false;
-            }
-        }
-
-        private boolean comparePaths(String cookiePath, String targetPath) {
-            if (cookiePath == null) {
-                return true;
-            } else if (cookiePath.equals("/")) {
-                return true;
-            } else if (targetPath.regionMatches(0, cookiePath, 0, cookiePath.length())) {
-                return true;
-            } else {
-                return false;
-            }
-
-        }
-
+        
         @Override
-        protected String doInBackground(String... params) {//params for string: url, username, password
+        protected String doInBackground(String... params) {//params for string: url, username, password, date
             portal = null;
             StringBuffer response;
+            
             try {
                 URL url = new URL(params[0]);
                 portal = (HttpURLConnection) url.openConnection();
@@ -165,228 +198,138 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 portal.setConnectTimeout(30000);
                 portal.setInstanceFollowRedirects(false);
 
+//                portal.setRequestProperty("Host", "www.dcds.edu");
+//                portal.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//                portal.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+//                portal.setRequestProperty("cache-Control", "max-age=0");
+                
                 String urlParameters = String.format("do=login&p=413&username=%s&password=%s&submit=login", params[1], params[2]);
-
+                
                 portal.setRequestProperty("Content-Length", Integer.toString(urlParameters.length()));
-
+                
                 portal.setDoInput(true);
                 portal.setDoOutput(true);
-
+                
                 // Send post request
                 DataOutputStream wr = new DataOutputStream(portal.getOutputStream());
                 wr.writeBytes(urlParameters);
                 wr.flush();
                 wr.close();
-
+                
                 int responseCode = portal.getResponseCode();
                 System.out.println("\nSending 'POST' request to URL : " + url);
                 System.out.println("Post parameters : " + urlParameters);
                 System.out.println("Response Code : " + responseCode);
-
+                
+                CookieManager.getInstance().storeCookies(portal);
+                
                 if (responseCode == 302) {
-                    Map cookiesMap = storeCookies(portal);
-
-
-                    if (cookiesMap == null) {
-                        return "Error - no cookies";//TODO:asdf
-                    }
-                    StringBuffer cookieStringBuffer = new StringBuffer();
-
-                    Iterator cookieNames = cookiesMap.keySet().iterator();
-                    while (cookieNames.hasNext()) {
-                        String cookieName = (String) cookieNames.next();
-                        Map cookie = (Map) cookiesMap.get(cookieName);
-                        // check cookie to ensure path matches  and cookie is not expired
-                        // if all is cool, add cookie to header string
-                        if (comparePaths((String) cookie.get("path"), portal.getURL().getPath()) && isNotExpired((String) cookie.get("expires"))) {
-                            cookieStringBuffer.append(cookieName + "=" + (String) cookie.get(cookieName));
-                            if (cookieNames.hasNext()) {
-                                cookieStringBuffer.append("; ");
-                            }
-                        }
-                    }
+                    
                     try {
-                        url = new URL(portal.getHeaderField("Location"));
-                    }
-                    catch (MalformedURLException e) {
-                        url = new URL(portal.getURL().getHost() + "/" + portal.getHeaderField("Location"));
-                    }
-                    finally {
+                        url = new URL(portal.getHeaderField(getString(R.string.responseHeader_Location)));
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+//                        url = new URL(portal.getURL().getHost() + "/" + portal.getHeaderField(getString(R.string.responseHeader_Location)));
+                    } finally {
                         if (portal != null)
                             portal.disconnect();
                     }
                     try {
-                        portal.disconnect();
                         portal = (HttpURLConnection) url.openConnection();
                         portal.setRequestMethod("GET");
-
+                        
                         portal.setConnectTimeout(3000);
-
-                        portal.setRequestProperty("Cookie", cookieStringBuffer.toString());
+                        CookieManager.getInstance().setCookies(portal);
+//                        portal.setRequestProperty(getString(R.string.requestHeader_Cookie), cookieStringBuffer.toString());
                         portal.setConnectTimeout(3000);
                         portal.setReadTimeout(3000);
 
-                        int NresponseCode = portal.getResponseCode();
+//                        urlParameters = String.format("p=8256&start=05/21/2017&period=day");
 
+//                        portal.setRequestProperty("Content-Length", Integer.toString(urlParameters.length()));
+//
+//                        portal.setDoInput(true);
+//                        portal.setDoOutput(true);
+                        
+                        // Send post request
+//                        wr = new DataOutputStream(portal.getOutputStream());
+////                        wr.writeBytes(urlParameters);
+//                        wr.flush();
+//                        wr.close();
+                        
+                        int NresponseCode = portal.getResponseCode();
+                        
                         BufferedReader in = null;
                         in = new BufferedReader(new InputStreamReader(portal.getInputStream()));
                         String inputLine;
                         response = new StringBuffer();
-
+                        
                         while ((inputLine = in.readLine()) != null) {
                             response.append(inputLine);
                         }
                         in.close();
-
+                        
                         if (NresponseCode != HttpsURLConnection.HTTP_OK) {
                             return NresponseCode + "";
                         }
-
-
+                        
+                        
                         return response.toString();
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
-                    }
-                    finally {
+                    } finally {
                         if (portal != null) {
                             portal.disconnect();
                         }
-
+                        
                     }
                 } else {
                     BufferedReader in = null;
                     in = new BufferedReader(new InputStreamReader(portal.getInputStream()));
                     String inputLine;
                     response = new StringBuffer();
-
+                    
                     while ((inputLine = in.readLine()) != null) {
                         response.append(inputLine);
                     }
                     in.close();
                     return response.toString();
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            }
-            finally {
+            } finally {
                 if (portal != null) {
                     portal.disconnect();
                 }
             }
             return null;
-
+            
         }
-
+        
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
-
+        
         @Override
         protected void onPostExecute(String s) {
             delegate.processFinish(s);
         }
-
+        
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
         }
-
+        
         @Override
         protected void onCancelled(String s) {
             super.onCancelled(s);
         }
-
+        
         @Override
         protected void onCancelled() {
             super.onCancelled();
         }
-    }
-
-    private class HTMLGetTextTask extends AsyncTask<URL, Integer, String> {
-        protected String doInBackground(URL... urls) {
-            int count = urls.length;
-            String total = "";
-            for (int i = 0; i < count; i++) {
-                total += getHTMLdata(urls[i]);
-                publishProgress((int) ((i / (float) count) * 100));
-                // Escape early if cancel() is called
-                if (isCancelled()) {
-                    break;
-                }
-            }
-            return total;
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-            mTestTextView = (TextView) findViewById(R.id.testTextView);
-            mTestTextView.setText("Downloaded " + progress[0] + " bytes.");
-        }
-
-        protected void onPostExecute(String result) {
-            mTestTextView = (TextView) findViewById(R.id.textView3);
-            mTestTextView.setText("Downloaded " + result + " bytes");
-        }
-    }
-
-    private String getHTMLdata(URL url) {
-        String data = "";
-        HttpURLConnection urlC = null;
-        try {
-            urlC = (HttpURLConnection) url.openConnection();
-            InputStream in = urlC.getInputStream();
-
-            InputStreamReader isw = new InputStreamReader(in);
-
-            int d = isw.read();
-            while (d != -1) {
-                char current = (char) d;
-                d = isw.read();
-                data += current;
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            if (urlC != null) {
-                urlC.disconnect();
-            }
-        }
-        return data;
-    }
-
-    public Map storeCookies(URLConnection conn) throws IOException {
-
-        Map domainStore; // this is where we will store cookies for this domain
-
-        domainStore = new HashMap();
-
-        String headerName;
-        for (int i = 1; (headerName = conn.getHeaderFieldKey(i)) != null; i++) {
-            if (headerName.equalsIgnoreCase("Set-Cookie")) {
-                Map cookie = new HashMap();
-                StringTokenizer st = new StringTokenizer(conn.getHeaderField(i), ";");
-
-                if (st.hasMoreTokens()) {
-                    String token = st.nextToken();
-                    String name = token.substring(0, token.indexOf("="));
-                    String value = token.substring(token.indexOf("=") + 1, token.length());
-                    domainStore.put(name, cookie);
-                    cookie.put(name, value);
-                }
-
-                while (st.hasMoreTokens()) {
-                    String token = st.nextToken();
-                    if (token.indexOf("=") != -1)
-                        cookie.put(token.substring(0, token.indexOf("=")).toLowerCase(), token.substring(token.indexOf("=") + 1, token.length()));
-
-                }
-            }
-        }
-        return domainStore;
     }
 }
 
