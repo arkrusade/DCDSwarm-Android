@@ -20,8 +20,8 @@ public class ExampleUnitTest {
     @Test
     public void changeDateTest() throws Exception {
         Date newDate = new Date();
-        assertNotEquals(newDate, DateExtension.getSharedInstance().tomorrow(newDate));
-        assertNotEquals(newDate, DateExtension.getSharedInstance().yesterday(newDate));
-        assertEquals(newDate, (DateExtension.getSharedInstance().changeDate(newDate,0)));
+        assertNotEquals(newDate, DateExtension.getDateExtension().tomorrow(newDate));
+        assertNotEquals(newDate, DateExtension.getDateExtension().yesterday(newDate));
+        assertEquals(newDate, (DateExtension.getDateExtension().changeDate(newDate,0)));
     }
 }

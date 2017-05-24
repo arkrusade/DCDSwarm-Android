@@ -19,8 +19,8 @@
     <string name="error_invalid_password">Please enter a password</string>
     <string name="requestHeader_Cookie">Cookie</string>
     <string name="responseHeader_Location">Location</string>
-    <string name="URL_scheduleRequest"><![CDATA[https://www.dcds.edu/userlogin.cfm?pp=8256&userrequest=YES&keyrequest=false&userpage=8253]]></string>
-    <string name="URL_scheduleDay"><![CDATA[https://www.dcds.edu/page.cfm?p=8256]]></string>
     <string name="tomorrow">Tomorrow</string>
     <string name="yesterday">Yesterday</string>
+    <string name="URL_schedule_request"><![CDATA[https://www.dcds.edu/userlogin.cfm?pp=8256&userrequest=YES&keyrequest=false&userpage=8253]]></string>
+    <string name="URL_schedule_day"><![CDATA[https://www.dcds.edu/page.cfm?p=8256]]></string>
 </resources>

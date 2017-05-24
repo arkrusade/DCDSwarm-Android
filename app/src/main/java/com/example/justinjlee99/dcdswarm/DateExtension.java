@@ -17,7 +17,7 @@ public class DateExtension {
         return DATE_EXTENSION;
     }
 
-    private final DateFormat format = new SimpleDateFormat("MM/dd/yy", Locale.getDefault());
+    private final DateFormat format = new SimpleDateFormat("E - MM/dd/yy", Locale.getDefault());
     private Calendar c = Calendar.getInstance();
 
     String dateToString(Date date) {
@@ -26,19 +26,54 @@ public class DateExtension {
     Date stringToDate(String string) throws ParseException {
         return format.parse(string);
     }
-
+    
+    //TODO: add buttons for these methods
+//    Date weekdayNext(Date date) {
+//        c.setTime(date);
+//        int a = c.get(Calendar.DAY_OF_WEEK);
+//        return c.getTime();
+//    }
+//
+//    Date weekdayBack(Date date, int diff) {
+//        c.setTime(date);
+//        c.add(Calendar.DATE, diff);
+//        return c.getTime();
+//    }
+    
     Date changeDate(Date date, int diff) {
         c.setTime(date);
         c.add(Calendar.DATE, diff);
         return c.getTime();
     }
-
+    
+    Date changeMonth(Date date, int diff) {
+        c.setTime(date);
+        c.add(Calendar.MONTH, diff);
+        return c.getTime();
+    }
+    
     Date tomorrow(Date date) {
         return changeDate(date, 1);
     }
-
+    
     Date yesterday(Date date) {
         return changeDate(date, -1);
+    }
+    
+    Date weekNext(Date date) {
+        return changeDate(date, 7);
+    }
+    
+    Date weekBack(Date date) {
+        return changeDate(date, -7);
+    }
+    
+    Date monthNext(Date date) {
+        return changeMonth(date, 1);
+    }
+    
+    Date monthBack(Date date) {
+        return changeMonth(date, -1);
     }
 
 }

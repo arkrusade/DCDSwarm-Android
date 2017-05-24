@@ -14,21 +14,32 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+
+import static com.example.justinjlee99.dcdswarm.StringCropper.cropExclusive;
+
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity {
     public static final String USERNAME_PARAMETER = "com.example.DCDSwarm.USERNAME";
     public static final String PASSWORD_PARAMETER = "com.example.DCDSwarm.PASSWORD";
-
+    
     private UserLoginTask mAuthTask = null;
-
+    
     // UI references.
     private AutoCompleteTextView mUsernameView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
                 return false;
             }
         });
-
+        
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -56,49 +67,49 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin();
             }
         });
-
+        
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-        autoLogin();
+//        autoLogin();
     }
-
+    
     private void autoLogin() {
         mUsernameView.setText(testLogin.user);
         mPasswordView.setText(testLogin.pass);
         attemptLogin();
     }
-
+    
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;
         }
-
+        
         // Reset errors.
         mUsernameView.setError(null);
         mPasswordView.setError(null);
-
+        
         // Store values at the time of the login attempt.
-
+        
         String email = mUsernameView.getText().toString();
         String password = mPasswordView.getText().toString();
-
+        
         boolean cancel = false;
         View focusView = null;
-
+        
         // Check for a valid password, if the user entered one.
         if (TextUtils.isEmpty(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
-
+        
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             mUsernameView.setError(getString(R.string.error_field_required));
             focusView = mUsernameView;
             cancel = true;
         }
-
+        
         if (cancel) {
             focusView.requestFocus();
         } else {
@@ -106,37 +117,81 @@ public class LoginActivity extends AppCompatActivity {
             mAuthTask.execute((Void) null);
         }
     }
-
+    
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
+        
         private final String mEmail;
         private final String mPassword;
-
+        HttpURLConnection portal;
+        
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
         }
-
+        
         @Override
         protected Boolean doInBackground(Void... params) {
             //TODO: attempt authentication against a network service.
-
-//            try {
-//               Thread.sleep(2000);
-//            }
-//            catch (InterruptedException e) {
-//                return false;
-//            }
-
-
-            return true;
+            
+            try {
+                URL url = new URL(getString(R.string.URL_schedule_request));
+                portal = (HttpURLConnection) url.openConnection();
+                portal.setUseCaches(true);
+                portal.setRequestMethod("POST");
+                portal.setConnectTimeout(30000);
+                portal.setInstanceFollowRedirects(false);
+     
+                String urlParameters = String.format("do=login&p=413&username=%s&password=%s&submit=login", mEmail, mPassword);
+                
+                portal.setRequestProperty("Content-Length", Integer.toString(urlParameters.length()));
+                
+                portal.setDoInput(true);
+                portal.setDoOutput(true);
+                
+                // Send post request
+                DataOutputStream wr = new DataOutputStream(portal.getOutputStream());
+                wr.writeBytes(urlParameters);
+                wr.flush();
+                wr.close();
+                
+                int responseCode = portal.getResponseCode();
+                System.out.println("\nSending 'POST' request to URL : " + url);
+                System.out.println("Post parameters : " + urlParameters);
+                System.out.println("Response Code : " + responseCode);
+                
+                CookieManager.getInstance().storeCookies(portal);
+                
+                BufferedReader in = new BufferedReader(new InputStreamReader(portal.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+                
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+    
+                return checkLoggedIn(response.toString(), portal);
+    
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+                return false;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return false;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            } finally {
+                if (portal != null)
+                    portal.disconnect();
+            }
         }
-
+        
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
 //            showProgress(false);
-
+            
             if (success) {
                 successfulLogin();
             } else {
@@ -144,20 +199,47 @@ public class LoginActivity extends AppCompatActivity {
                 mPasswordView.requestFocus();
             }
         }
-
+        
         @Override
         protected void onCancelled() {
             mAuthTask = null;
 //            showProgress(false);
         }
     }
-
+    
     public void successfulLogin() {
         Intent intent = new Intent(this, MainActivity.class);
-
+        
         intent.putExtra(USERNAME_PARAMETER, mUsernameView.getText());
         intent.putExtra(PASSWORD_PARAMETER, mPasswordView.getText());
         startActivity(intent);
     }
+    
+    static boolean checkLoggedIn(String htmlString, HttpURLConnection conn) {
+        try {
+            int code = conn.getResponseCode();
+            if(code == 200) {
+                String loginCheck = cropExclusive(htmlString, "<meta name=\"description\" content=\"", " - Detroit");
+                if (loginCheck == null) {
+                    return false;
+                }
+                switch (loginCheck) {
+                    case "Member Login":
+                        return false;
+                    case "STUDENT PORTAL":
+                        //TODO: check for parents too
+                        return true;
+                    case "Academics Individual Classes Calendar":
+                        return true;
+                }
+                return false;
+            }
+            else if (code == 302 && conn.getHeaderField("Location").equals("https://www.dcds.edu/page.cfm?p=8256")) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
-

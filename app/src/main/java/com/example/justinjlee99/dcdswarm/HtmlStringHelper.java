@@ -1,5 +1,6 @@
 package com.example.justinjlee99.dcdswarm;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,24 +15,13 @@ import static com.example.justinjlee99.dcdswarm.StringCropper.cropExclusive;
  */
 
 public class HtmlStringHelper {
-    static PortalDay processCalendarString(String htmlString) {
+    static PortalDay processCalendarString(String htmlString) throws IOException {
 
 
 
-        //region empty day check
-        String emptyStart = "<li class=\"listempty\">";
-        String emptyEnd = "</li>";
+        
 
 
-        if (crop(htmlString, emptyStart, emptyEnd) != null) {
-            return PortalDay.emptyDay();
-        }
-        //endregion
-
-        //TODO: Cache for html logs
-
-//        let log:HTMLLog = HTMLLog(date:date, log:htmlString)
-//        CacheHelper.sharedInstance.addLog(log:log)
 
         //region find date
         String dateStart = "thisDate: {ts '";
@@ -46,10 +36,18 @@ public class HtmlStringHelper {
             e.printStackTrace();
         }
         if (date == null) {
-            date = new Date();
+            throw new IOException("Invalid string: no date");
         }
         //endregion
-
+//region empty day check
+        String emptyStart = "<li class=\"listempty\">";
+        String emptyEnd = "</li>";
+    
+    
+        if (crop(htmlString, emptyStart, emptyEnd) != null) {
+            return PortalDay.emptyDay(date);
+        }
+        //endregion
         PortalDay tempDay = new PortalDay(date);
 
 
@@ -60,7 +58,7 @@ public class HtmlStringHelper {
         dayString = cropExclusive(cropExclusive(htmlString, dayStart, dayEnd), ">");
 
         if (dayString == null) {
-            return PortalDay.emptyDay();
+            throw new IOException("Invalid string: no daystring found");
         }
 
 
