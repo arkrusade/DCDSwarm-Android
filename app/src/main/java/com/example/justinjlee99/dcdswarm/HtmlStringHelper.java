@@ -76,8 +76,7 @@ public class HtmlStringHelper {
 
         dayString = cropExclusive(dayString, activityStartString);
         String currentActivity = initActivity;
-        while (currentActivity != null) {//removes currActivity by finding next one
-
+        while (currentActivity != null) {
 
             String activityTitle;
             String activityClassName;
@@ -122,7 +121,7 @@ public class HtmlStringHelper {
 //                else {
                 activityString = crop(currentActivity, "etitle");
 
-                //region Separating name and title
+                //region Getting name+title
                 //linked
                 if (currentActivity.contains("title=\"Click here for event details\">")) {
                     activityTitle = cropExclusive(activityString, "title=\"Click here for event details\">", "</span>");//removes beginning crap in activity
@@ -144,19 +143,21 @@ public class HtmlStringHelper {
                 if (activityTitle == null)
                     activityTitle = "No title found";
                 //endregion
-                //region Name and activity title individual parsing
-                if(activityTitle.contains(":")) {
+                //region Name and activity title parsing
+                if(activityTitle.contains(": ")) {
+                    activityClassName = cropEndExclusive(activityTitle, ": ");
+                    activityTitle = cropExclusive(activityTitle, ": ");
+                }
+                else if(activityTitle.contains(":")) {
                     activityClassName = cropEndExclusive(activityTitle, ":");
                     activityTitle = cropExclusive(activityTitle, ":");
                 }
                 else {
                     activityClassName = activityTitle;
-                    activityTitle = "Title not found";
+                    activityTitle = "No title found";
                 }
                 //endregion
-                // TODO: organize activities by class and use id
-
-
+                //TODO: organize activities by class and use id
                 //region Description parsing
                 activityString = cropExclusive(activityString, "</span>");
                 if (activityString.contains("eventnotes\">"))
@@ -164,15 +165,14 @@ public class HtmlStringHelper {
                     activityDesc = cropExclusive(activityString, "eventnotes\">", "</span>");
                 }
                 else {
-                    activityDesc = "Description not found";
+                    activityDesc = "No description found";
                 }
                 //endregion
-
 
                 tempDay.assignments.add(new Assignment(activityClassName, activityTitle, activityDesc));
 
                 //while loop logic
-                //gets the next activity
+                // removes currActivity by finding next one
                 currentActivity = cropExclusive(dayString, activityStartString, activityEndString);
                 dayString = cropExclusive(dayString, activityStartString);
             }

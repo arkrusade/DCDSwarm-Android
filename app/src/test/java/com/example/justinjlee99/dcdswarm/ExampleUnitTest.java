@@ -2,6 +2,8 @@ package com.example.justinjlee99.dcdswarm;
 
 import org.junit.Test;
 
+import java.util.Date;
+
 import static org.junit.Assert.*;
 
 /**
@@ -13,5 +15,13 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
+    }
+
+    @Test
+    public void changeDateTest() throws Exception {
+        Date newDate = new Date();
+        assertNotEquals(newDate, DateExtension.getSharedInstance().tomorrow(newDate));
+        assertNotEquals(newDate, DateExtension.getSharedInstance().yesterday(newDate));
+        assertEquals(newDate, (DateExtension.getSharedInstance().changeDate(newDate,0)));
     }
 }
