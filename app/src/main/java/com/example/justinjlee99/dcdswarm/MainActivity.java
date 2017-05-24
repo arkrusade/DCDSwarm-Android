@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,10 +41,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         downloadAssignments(username, pass);
         
         mTestTextView = (TextView) findViewById(R.id.textView);
-
+//        Toolbar t = (Toolbar) findViewById(R.id.toolbar);
+//        t.setTitle("Date");
 //
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 //
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -78,15 +80,19 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         mListView.setAdapter(adapter);
     }
     
+    //region Date changing
     public void tomorrow(View view) {
         changePortalDate(getDateExtension().tomorrow(portalDay.date));
+    }
+    public void yesterday(View view) {
+        changePortalDate(getDateExtension().yesterday(portalDay.date));
     }
     
     public void changePortalDate(Date newDate) {
 //        request.cancel(true);
         request = new PortalDayTask(this).execute(newDate);
     }
-
+    //endregion
 //    public boolean loginToPortal(String username, String password) {
 //        portal = null;
 //        try {
@@ -113,10 +119,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         public PortalDayTask(AsyncResponse activity) {
             this.delegate = activity;
         }
-        
         @Override
         protected String doInBackground(Date... params) {
             try {
+                //region Request
                 requestDate = params[0];
                 
                 URL url = new URL(String.format(getString(R.string.URL_scheduleDay)+"&start=%s&period=day",getDateExtension().dateToString(requestDate)));
@@ -125,22 +131,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 
                 portal.setConnectTimeout(3000);
                 CookieManager.getInstance().setCookies(portal);
-//                portal.setRequestProperty(getString(R.string.requestHeader_Cookie), cookieStringBuffer.toString());
                 portal.setConnectTimeout(3000);
                 portal.setReadTimeout(3000);
                 portal.setDoInput(true);
                 portal.setDoOutput(true);
-                
-//                String urlParameters = String.format("p=8256&start=%s&period=day", getDateExtension().dateToString(requestDate));
-//                portal.setRequestProperty("Content-Length", Integer.toString(urlParameters.length()));
-                
-                
-                //Send params
-//                DataOutputStream wr = new DataOutputStream(portal.getOutputStream());
-//                wr.writeBytes(urlParameters);
-//                wr.flush();
-//                wr.close();
-                
+                //endregion
+                //region Response
                 int responseCode = portal.getResponseCode();
                 CookieManager.getInstance().storeCookies(portal);
                 
@@ -156,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 if (responseCode != HttpsURLConnection.HTTP_OK) {
                     return responseCode + "";
                 }
-                
+                //endregion
                 
                 return response.toString();
             } catch (Exception e) {
