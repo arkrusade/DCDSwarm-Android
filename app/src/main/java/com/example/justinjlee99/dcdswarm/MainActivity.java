@@ -17,7 +17,7 @@ import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import static com.example.justinjlee99.dcdswarm.DateExtension.getDateExtension;
+import static com.example.justinjlee99.dcdswarm.DateExtension.getInstance;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
     ListView mListView;
@@ -36,10 +36,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         String pass = intent.getExtras().get(LoginActivity.PASSWORD_PARAMETER).toString();
         
         mListView = (ListView) findViewById(R.id.listView);
-        changePortalDate(new Date());
         t = (Toolbar) findViewById(R.id.toolbar);
         t.setTitle("Date");
         setSupportActionBar(t);
+    
+        changePortalDate(new Date());
+
 //
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 //        });
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-    
+
 //    public void downloadAssignments(String username, String password) {
 ////        request.cancel(true);
 //        try {
@@ -75,42 +77,33 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             portalDay = new PortalDay(portalDay.date);
             //TODO: add error alerts
         }
-        t.setTitle(getDateExtension().dateToString(this.portalDay.date));
+        CacheHelper.getInstance().storePortalDay(this, portalDay);
+        updateTable();
+    }
+    
+    public void updateTable() {
+        t.setTitle(getInstance().formatWithDay.format(this.portalDay.date));
         AssignmentAdapter adapter = new AssignmentAdapter(this, portalDay.assignments);
         mListView.setAdapter(adapter);
     }
-    
     //region Date changing
     public void tomorrow(View view) {
-        changePortalDate(getDateExtension().tomorrow(portalDay.date));
+        changePortalDate(getInstance().tomorrow(portalDay.date));
     }
     
     public void yesterday(View view) {
-        changePortalDate(getDateExtension().yesterday(portalDay.date));
+        changePortalDate(getInstance().yesterday(portalDay.date));
     }
     
     public void changePortalDate(Date newDate) {
-//        request.cancel(true);
+        if(request != null)
+            request.cancel(true);
+        portalDay = CacheHelper.getInstance().getPortalDay(this, newDate);
+        updateTable();
+        //TODO: add loading signal
         request = new PortalDayTask(this).execute(newDate);
     }
     //endregion
-//    public boolean loginToPortal(String username, String password) {
-//        portal = null;
-//        try {
-//
-//            PortalLoginTask task = new PortalLoginTask(this);
-//            String[] asdf = {"https://www.dcds.edu/userlogin.cfm?pp=8256&userrequest=YES&keyrequest=false&userpage=8253", username, password};
-//            String result = task.execute(asdf).get();
-//
-//
-//            return true;
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//
-//    }
     
     private class PortalDayTask extends AsyncTask<Date, Void, String> {
         HttpURLConnection portal;
@@ -127,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 //region Request
                 requestDate = params[0];
                 
-                URL url = new URL(String.format(getString(R.string.URL_schedule_day) + "&start=%s&period=day", getDateExtension().dateToString(requestDate)));
+                URL url = new URL(String.format(getString(R.string.URL_schedule_day) + "&start=%s&period=day", getInstance().formatSlashed.format(requestDate)));
                 portal = (HttpURLConnection) url.openConnection();
                 portal.setRequestMethod("GET");
                 
@@ -172,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             delegate.processFinish(s);
         }
     }
-    
+
 //    private class PortalLoginTask extends AsyncTask<String, Integer, String> {
 //        HttpURLConnection portal;
 //

@@ -70,12 +70,13 @@ public class LoginActivity extends AppCompatActivity {
         
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-//        autoLogin();
+        autoLogin();
     }
     
     private void autoLogin() {
         mUsernameView.setText(testLogin.user);
         mPasswordView.setText(testLogin.pass);
+        
         attemptLogin();
     }
     

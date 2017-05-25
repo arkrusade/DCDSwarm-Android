@@ -1,7 +1,6 @@
 package com.example.justinjlee99.dcdswarm;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,19 +12,21 @@ import java.util.Locale;
 
 public class DateExtension {
     private static final DateExtension DATE_EXTENSION = new DateExtension();
-    static DateExtension getDateExtension() {
+    static DateExtension getInstance() {
         return DATE_EXTENSION;
     }
-
-    private final DateFormat format = new SimpleDateFormat("E - MM/dd/yy", Locale.getDefault());
+    
+    final DateFormat formatSlashed = new SimpleDateFormat("MM/dd/yy", Locale.getDefault());
+    final DateFormat formatDashed = new SimpleDateFormat("MM-dd-yy", Locale.getDefault());
+    final DateFormat formatWithDay = new SimpleDateFormat("E - MM/dd/yy", Locale.getDefault());
     private Calendar c = Calendar.getInstance();
-
-    String dateToString(Date date) {
-        return format.format(date);
-    }
-    Date stringToDate(String string) throws ParseException {
-        return format.parse(string);
-    }
+    
+//    String dateToString(Date date) {
+//        return formatSlashed.formatSlashed(date);
+//    }
+//    Date stringToDate(String string) throws ParseException {
+//        return formatSlashed.parse(string);
+//    }
     
     //TODO: add buttons for these methods
 //    Date weekdayNext(Date date) {
