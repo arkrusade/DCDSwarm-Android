@@ -1,6 +1,5 @@
 package com.example.justinjlee99.dcdswarm;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -30,10 +29,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Get the Intent that started this activity and extract the string
-        Intent intent = getIntent();
-        intent.getExtras();
-        String username = intent.getExtras().get(LoginActivity.USERNAME_PARAMETER).toString();
-        String pass = intent.getExtras().get(LoginActivity.PASSWORD_PARAMETER).toString();
         
         mListView = (ListView) findViewById(R.id.listView);
         t = (Toolbar) findViewById(R.id.toolbar);

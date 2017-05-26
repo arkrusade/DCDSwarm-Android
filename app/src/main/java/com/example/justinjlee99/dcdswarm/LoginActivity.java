@@ -74,8 +74,9 @@ public class LoginActivity extends AppCompatActivity {
     }
     
     private void autoLogin() {
-        mUsernameView.setText(testLogin.user);
-        mPasswordView.setText(testLogin.pass);
+        Credentials c = CacheHelper.getInstance().getLogin(this);
+        mUsernameView.setText(c.username);
+        mPasswordView.setText(c.password);
         
         attemptLogin();
     }
@@ -209,10 +210,13 @@ public class LoginActivity extends AppCompatActivity {
     }
     
     public void successfulLogin() {
+        Credentials c = new Credentials( mUsernameView.getText().toString(), mPasswordView.getText().toString());
+        CacheHelper.getInstance().storeLogin(this, c);
+        mUsernameView.setText("");
+        mPasswordView.setText("");
         Intent intent = new Intent(this, MainActivity.class);
-        
-        intent.putExtra(USERNAME_PARAMETER, mUsernameView.getText());
-        intent.putExtra(PASSWORD_PARAMETER, mPasswordView.getText());
+        intent.putExtra(USERNAME_PARAMETER, c.username);
+        intent.putExtra(PASSWORD_PARAMETER, c.password);
         startActivity(intent);
     }
     
