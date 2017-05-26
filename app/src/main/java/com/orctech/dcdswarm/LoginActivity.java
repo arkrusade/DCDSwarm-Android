@@ -1,4 +1,4 @@
-package com.example.justinjlee99.dcdswarm;
+package com.orctech.dcdswarm;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -23,7 +23,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-import static com.example.justinjlee99.dcdswarm.StringCropper.cropExclusive;
+import static com.orctech.dcdswarm.StringCropper.cropExclusive;
 
 /**
  * A login screen that offers login via email/password.
@@ -77,7 +77,6 @@ public class LoginActivity extends AppCompatActivity {
         Credentials c = CacheHelper.getInstance().getLogin(this);
         mUsernameView.setText(c.username);
         mPasswordView.setText(c.password);
-        
         attemptLogin();
     }
     
@@ -142,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
                 portal.setRequestMethod("POST");
                 portal.setConnectTimeout(30000);
                 portal.setInstanceFollowRedirects(false);
-     
+                
                 String urlParameters = String.format("do=login&p=413&username=%s&password=%s&submit=login", mEmail, mPassword);
                 
                 portal.setRequestProperty("Content-Length", Integer.toString(urlParameters.length()));
@@ -171,9 +170,9 @@ public class LoginActivity extends AppCompatActivity {
                     response.append(inputLine);
                 }
                 in.close();
-    
+                
                 return checkLoggedIn(response.toString(), portal);
-    
+                
             } catch (ProtocolException e) {
                 e.printStackTrace();
                 return false;

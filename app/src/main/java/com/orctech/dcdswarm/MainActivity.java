@@ -1,4 +1,4 @@
-package com.example.justinjlee99.dcdswarm;
+package com.orctech.dcdswarm;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,7 +16,7 @@ import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import static com.example.justinjlee99.dcdswarm.DateExtension.getInstance;
+import static com.orctech.dcdswarm.DateExtension.getInstance;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
     ListView mListView;

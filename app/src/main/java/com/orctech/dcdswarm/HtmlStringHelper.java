@@ -1,4 +1,4 @@
-package com.example.justinjlee99.dcdswarm;
+package com.orctech.dcdswarm;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -6,9 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.example.justinjlee99.dcdswarm.StringCropper.crop;
-import static com.example.justinjlee99.dcdswarm.StringCropper.cropEndExclusive;
-import static com.example.justinjlee99.dcdswarm.StringCropper.cropExclusive;
+import static com.orctech.dcdswarm.StringCropper.crop;
+import static com.orctech.dcdswarm.StringCropper.cropEndExclusive;
+import static com.orctech.dcdswarm.StringCropper.cropExclusive;
 
 /**
  * Created by justinjlee99 on 5/17/2017.
@@ -16,13 +16,6 @@ import static com.example.justinjlee99.dcdswarm.StringCropper.cropExclusive;
 
 public class HtmlStringHelper {
     static PortalDay processCalendarString(String htmlString) throws IOException {
-
-
-
-        
-
-
-
         //region find date
         String dateStart = "thisDate: {ts '";
         String dateEnd = "'} start:";
@@ -39,7 +32,7 @@ public class HtmlStringHelper {
             throw new IOException("Invalid string: no date");
         }
         //endregion
-//region empty day check
+        //region empty day check
         String emptyStart = "<li class=\"listempty\">";
         String emptyEnd = "</li>";
     
@@ -48,9 +41,8 @@ public class HtmlStringHelper {
             return PortalDay.emptyDay(date);
         }
         //endregion
+        //region initialize PortalDay
         PortalDay tempDay = new PortalDay(date);
-
-
 
         String dayStart = "<span class=\"listcap";
         String dayEnd = "</div>";//TODO: will not work on week or greater periods
@@ -60,9 +52,9 @@ public class HtmlStringHelper {
         if (dayString == null) {
             throw new IOException("Invalid string: no daystring found");
         }
+        //endregion
 
-
-        //MARK: Activity Divider
+        //region Activity Divider logic
         String activityStartString = "<ul class=\"eventobj calendar";
         String activityEndString = "<!-- end eventobj -->";
 
@@ -74,6 +66,8 @@ public class HtmlStringHelper {
 
         dayString = cropExclusive(dayString, activityStartString);
         String currentActivity = initActivity;
+        //endregion
+
         while (currentActivity != null) {
 
             String activityTitle;
@@ -132,7 +126,6 @@ public class HtmlStringHelper {
                         if (hasA != null)
                             activityTitle = hasA;
                     }
-
                 }
                 //not linked
                 else {
@@ -141,7 +134,7 @@ public class HtmlStringHelper {
                 if (activityTitle == null)
                     activityTitle = "No title found";
                 //endregion
-                //region Name and activity title parsing
+                //region Separating name from title
                 if(activityTitle.contains(": ")) {
                     activityClassName = cropEndExclusive(activityTitle, ": ");
                     activityTitle = cropExclusive(activityTitle, ": ");
@@ -154,6 +147,14 @@ public class HtmlStringHelper {
                     activityClassName = activityTitle;
                     activityTitle = "No title found";
                 }
+                String hasB = cropEndExclusive(activityTitle, "<br");//if has <br, crop. Since 'br' comes before 'a', skip a if it does
+                if (hasB != null) {
+                    activityTitle = hasB;
+                } else {
+                    String hasA = cropEndExclusive(activityTitle, "</a");
+                    if (hasA != null)
+                        activityTitle = hasA;
+                }
                 //endregion
                 //TODO: organize activities by class and use id
                 //region Description parsing
@@ -161,6 +162,14 @@ public class HtmlStringHelper {
                 if (activityString.contains("eventnotes\">"))
                 {
                     activityDesc = cropExclusive(activityString, "eventnotes\">", "</span>");
+                    hasB = cropEndExclusive(activityDesc, "<br");//if has <br, crop. Since 'br' comes before 'a', skip a if it does
+                    if (hasB != null) {
+                        activityDesc = hasB;
+                    } else {
+                        String hasA = cropEndExclusive(activityDesc, "</a");
+                        if (hasA != null)
+                            activityDesc = hasA;
+                    }
                 }
                 else {
                     activityDesc = "No description found";
@@ -169,8 +178,6 @@ public class HtmlStringHelper {
 
                 tempDay.assignments.add(new Assignment(activityClassName, activityTitle, activityDesc));
 
-                //while loop logic
-                // removes currActivity by finding next one
                 currentActivity = cropExclusive(dayString, activityStartString, activityEndString);
                 dayString = cropExclusive(dayString, activityStartString);
             }
