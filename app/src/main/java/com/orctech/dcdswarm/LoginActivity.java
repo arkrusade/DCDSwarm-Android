@@ -1,4 +1,4 @@
-package com.example.justinjlee99.dcdswarm;
+package com.orctech.dcdswarm;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -23,7 +23,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-import static com.example.justinjlee99.dcdswarm.StringCropper.cropExclusive;
+import static com.orctech.dcdswarm.StringCropper.cropExclusive;
 
 /**
  * A login screen that offers login via email/password.
@@ -72,13 +72,20 @@ public class LoginActivity extends AppCompatActivity {
         mProgressView = findViewById(R.id.login_progress);
         autoLogin();
     }
-    
+
     private void autoLogin() {
-        mUsernameView.setText(testLogin.user);
-        mPasswordView.setText(testLogin.pass);
-        
+        Credentials c = CacheHelper.getInstance().getLogin(this);
+        mUsernameView.setText(c.username);
+        mPasswordView.setText(c.password);
         attemptLogin();
     }
+
+//    private void autoLogin() {
+//        mUsernameView.setText(testLogin.user);
+//        mPasswordView.setText(testLogin.pass);
+//
+//        attemptLogin();
+//    }
     
     private void attemptLogin() {
         if (mAuthTask != null) {
@@ -209,10 +216,11 @@ public class LoginActivity extends AppCompatActivity {
     }
     
     public void successfulLogin() {
+        Credentials c = new Credentials(mUsernameView.getText().toString(), mPasswordView.getText().toString());
+        CacheHelper.getInstance().storeLogin(this, c);
         Intent intent = new Intent(this, MainActivity.class);
-        
-        intent.putExtra(USERNAME_PARAMETER, mUsernameView.getText());
-        intent.putExtra(PASSWORD_PARAMETER, mPasswordView.getText());
+        intent.putExtra(USERNAME_PARAMETER, c.username);
+        intent.putExtra(PASSWORD_PARAMETER, c.password);
         startActivity(intent);
     }
     
