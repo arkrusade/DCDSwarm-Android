@@ -26,7 +26,7 @@ import java.net.URL;
 import static com.orctech.dcdswarm.StringCropper.cropExclusive;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via username/password.
  */
 public class LoginActivity extends AppCompatActivity {
     public static final String USERNAME_PARAMETER = "com.example.DCDSwarm.USERNAME";
@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mUsernameView = (AutoCompleteTextView) findViewById(R.id.email);
+        mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
 
 //        mUsernameView.setText(both);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -60,8 +60,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button musernameSignInButton = (Button) findViewById(R.id.username_sign_in_button);
+        musernameSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
         
         // Store values at the time of the login attempt.
         
-        String email = mUsernameView.getText().toString();
+        String username = mUsernameView.getText().toString();
         String password = mPasswordView.getText().toString();
         
         boolean cancel = false;
@@ -104,8 +104,8 @@ public class LoginActivity extends AppCompatActivity {
             cancel = true;
         }
         
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
+        // Check for a valid username address.
+        if (TextUtils.isEmpty(username)) {
             mUsernameView.setError(getString(R.string.error_field_required));
             focusView = mUsernameView;
             cancel = true;
@@ -114,19 +114,19 @@ public class LoginActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(username, password);
             mAuthTask.execute((Void) null);
         }
     }
     
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
         
-        private final String mEmail;
+        private final String mUsername;
         private final String mPassword;
         HttpURLConnection portal;
         
-        UserLoginTask(String email, String password) {
-            mEmail = email;
+        UserLoginTask(String username, String password) {
+            mUsername = username;
             mPassword = password;
         }
         
@@ -142,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
                 portal.setConnectTimeout(30000);
                 portal.setInstanceFollowRedirects(false);
                 
-                String urlParameters = String.format("do=login&p=413&username=%s&password=%s&submit=login", mEmail, mPassword);
+                String urlParameters = String.format("do=login&p=413&username=%s&password=%s&submit=login", mUsername, mPassword);
                 
                 portal.setRequestProperty("Content-Length", Integer.toString(urlParameters.length()));
                 

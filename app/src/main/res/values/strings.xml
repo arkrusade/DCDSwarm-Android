@@ -1,26 +1,21 @@
 <resources>
     <string name="app_name">DCDSwarm</string>
 
-    <string name="message">Hi there</string>
-    <string name="editText">Hi</string>
-
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
+    <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
     <string name="action_log_in">Log in</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="title_activity_tabbed">TabbedActivity</string>
-    <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="thumbnail">Loading…</string>
+    <string name="loading">Loading…</string>
     <string name="error_invalid_password">Please enter a password</string>
+
     <string name="requestHeader_Cookie">Cookie</string>
     <string name="responseHeader_Location">Location</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="yesterday">Yesterday</string>
     <string name="URL_schedule_request"><![CDATA[https://www.dcds.edu/userlogin.cfm?pp=8256&userrequest=YES&keyrequest=false&userpage=8253]]></string>
     <string name="URL_schedule_day"><![CDATA[https://www.dcds.edu/page.cfm?p=8256]]></string>
+    <string name="title_activity_main">Schedule</string>
 </resources>
