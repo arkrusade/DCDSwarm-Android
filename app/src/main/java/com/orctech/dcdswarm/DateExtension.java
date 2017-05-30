@@ -35,7 +35,7 @@ public class DateExtension {
 //        return c.getTime();
 //    }
 //
-//    Date weekdayBack(Date date, int diff) {
+//    Date weekdayPrev(Date date, int diff) {
 //        c.setTime(date);
 //        c.add(Calendar.DATE, diff);
 //        return c.getTime();
@@ -65,7 +65,7 @@ public class DateExtension {
         return changeDate(date, 7);
     }
     
-    Date weekBack(Date date) {
+    Date weekPrev(Date date) {
         return changeDate(date, -7);
     }
     
@@ -73,7 +73,7 @@ public class DateExtension {
         return changeMonth(date, 1);
     }
     
-    Date monthBack(Date date) {
+    Date monthPrev(Date date) {
         return changeMonth(date, -1);
     }
 

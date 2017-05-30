@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         mListView = (ListView) findViewById(R.id.listView);
         t = (Toolbar) findViewById(R.id.toolbar);
         t.setTitle("Date");
+        
         setSupportActionBar(t);
     
         changePortalDate(new Date());
@@ -88,6 +89,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     
     public void yesterday(View view) {
         changePortalDate(getInstance().yesterday(portalDay.date));
+    }
+    public void weekNext(View view) {
+        changePortalDate(getInstance().weekNext(portalDay.date));
+    }
+    public void weekPrev(View view) {
+        changePortalDate(getInstance().weekPrev(portalDay.date));
+    }
+    public void today(View view) {
+        changePortalDate(new Date());
     }
     
     public void changePortalDate(Date newDate) {
