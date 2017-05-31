@@ -1,4 +1,4 @@
-package com.orctech.dcdswarm;
+package com.orctech.dcdswarm.Activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -14,6 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.orctech.dcdswarm.Helpers.CacheHelper;
+import com.orctech.dcdswarm.Helpers.CookieHelper;
+import com.orctech.dcdswarm.Models.Login;
+import com.orctech.dcdswarm.R;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -23,7 +28,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-import static com.orctech.dcdswarm.StringCropper.cropExclusive;
+import static com.orctech.dcdswarm.Helpers.StringCropper.cropExclusive;
 
 /**
  * A login screen that offers login via username/password.
@@ -73,9 +78,9 @@ public class LoginActivity extends AppCompatActivity {
     }
     
     private void autoLogin() {
-        Credentials c = CacheHelper.getInstance().getLogin(this);
-        mUsernameView.setText(c.username);
-        mPasswordView.setText(c.password);
+        Login c = CacheHelper.getInstance().getLogin(this);
+        mUsernameView.setText(c.getUsername());
+        mPasswordView.setText(c.getPassword());
         attemptLogin();
     }
     
@@ -159,7 +164,7 @@ public class LoginActivity extends AppCompatActivity {
                 System.out.println("Post parameters : " + urlParameters);
                 System.out.println("Response Code : " + responseCode);
                 
-                CookieManager.getInstance().storeCookies(portal);
+                CookieHelper.getInstance().storeCookies(portal);
                 
                 BufferedReader in = new BufferedReader(new InputStreamReader(portal.getInputStream()));
                 String inputLine;
@@ -208,13 +213,13 @@ public class LoginActivity extends AppCompatActivity {
     }
     
     public void successfulLogin() {
-        Credentials c = new Credentials( mUsernameView.getText().toString(), mPasswordView.getText().toString());
+        Login c = new Login( mUsernameView.getText().toString(), mPasswordView.getText().toString());
         CacheHelper.getInstance().storeLogin(this, c);
         mUsernameView.setText("");
         mPasswordView.setText("");
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(USERNAME_PARAMETER, c.username);
-        intent.putExtra(PASSWORD_PARAMETER, c.password);
+        Intent intent = new Intent(this, com.orctech.dcdswarm.Activities.MainActivity.class);
+        intent.putExtra(USERNAME_PARAMETER, c.getUsername());
+        intent.putExtra(PASSWORD_PARAMETER, c.getPassword());
         startActivity(intent);
     }
     

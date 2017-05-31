@@ -1,4 +1,7 @@
-package com.orctech.dcdswarm;
+package com.orctech.dcdswarm.Helpers;
+
+import com.orctech.dcdswarm.Models.Assignment;
+import com.orctech.dcdswarm.Models.PortalDay;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -6,16 +9,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.orctech.dcdswarm.StringCropper.crop;
-import static com.orctech.dcdswarm.StringCropper.cropEndExclusive;
-import static com.orctech.dcdswarm.StringCropper.cropExclusive;
+import static com.orctech.dcdswarm.Helpers.StringCropper.crop;
+import static com.orctech.dcdswarm.Helpers.StringCropper.cropEndExclusive;
+import static com.orctech.dcdswarm.Helpers.StringCropper.cropExclusive;
+
 
 /**
  * Created by justinjlee99 on 5/17/2017.
  */
 
 public class HtmlStringHelper {
-    static PortalDay processCalendarString(String htmlString) throws IOException {
+    public static PortalDay processCalendarString(String htmlString) throws IOException {
         //region find date
         String dateStart = "thisDate: {ts '";
         String dateEnd = "'} start:";
@@ -176,7 +180,7 @@ public class HtmlStringHelper {
                 }
                 //endregion
 
-                tempDay.assignments.add(new Assignment(activityClassName, activityTitle, activityDesc));
+                tempDay.getAssignments().add(new Assignment(activityClassName, activityTitle, activityDesc));
 
                 currentActivity = cropExclusive(dayString, activityStartString, activityEndString);
                 dayString = cropExclusive(dayString, activityStartString);

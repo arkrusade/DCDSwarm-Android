@@ -1,4 +1,7 @@
-package com.orctech.dcdswarm;
+package com.orctech.dcdswarm.Models;
+
+import com.orctech.dcdswarm.Helpers.DateExtension;
+import com.orctech.dcdswarm.Helpers.StringCropper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,8 +9,25 @@ import java.util.Date;
 
 
 public class PortalDay {
-    public ArrayList<Assignment> assignments;
-    Date date;
+    private ArrayList<Assignment> assignments;
+    
+    public ArrayList<Assignment> getAssignments() {
+        return assignments;
+    }
+    
+    public void setAssignments(ArrayList<Assignment> assignments) {
+        this.assignments = assignments;
+    }
+    
+    public Date getDate() {
+        return date;
+    }
+    
+    public void setDate(Date date) {
+        this.date = date;
+    }
+    
+    private Date date;
     
     //TODO: make date for checking against errors, this date should not be final
     //when there is nothing, return proper date
@@ -26,25 +46,19 @@ public class PortalDay {
         this.date = date;
     }
     
-    //    public PortalDay(String str) throws ParseException {
-//        this(DateExtension.getInstance().formatSlashed.parse(StringCropper.cropExclusive(str, "PortalDay{date=", ", assignments={")));
-//         String assignmentString = StringCropper.cropExclusive(str, ", assignments={","}");
-//    }
     public void setAssignments(String assignments) {
         this.assignments = new ArrayList<>();
         String[] temp = StringCropper.cropExclusive(assignments, "assignments={[", "]}").replace("}", "").split("Assignment\\{");
         for (String a : temp) {
-            if (a.contains("name") || a.contains("title") || a.contains("description"))
+            if (a.contains("name") || a.contains("title") || a.contains("description")) {
                 this.assignments.add(new Assignment(a));
+            }
         }
         
     }
     
     public String assignmentsToString() {
-        StringBuilder str = new StringBuilder("assignments={");
-        str.append(Arrays.toString(assignments.toArray()));
-        str.append("}");
-        return str.toString();
+        return "assignments={" + Arrays.toString(assignments.toArray()) + "}";
     }
     
     @Override
@@ -52,13 +66,13 @@ public class PortalDay {
         return "PortalDay{" + "date=" + DateExtension.getInstance().formatSlashed.format(date) + ", " + assignmentsToString() + '}';
     }
     
-    static PortalDay emptyDay(Date date) {
+    public static PortalDay emptyDay(Date date) {
         ArrayList<Assignment> temp = new ArrayList<>();
         temp.add(new Assignment("", "There are no events to display", ""));
         return new PortalDay(temp, date);
     }
     
-    static PortalDay missingDay(Date date) {
+    public static PortalDay missingDay(Date date) {
         ArrayList<Assignment> temp = new ArrayList<>();
         temp.add(new Assignment("", "Data not found", ""));
         return new PortalDay(temp, date);

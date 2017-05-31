@@ -1,4 +1,4 @@
-package com.orctech.dcdswarm;
+package com.orctech.dcdswarm.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.orctech.dcdswarm.Models.Assignment;
+import com.orctech.dcdswarm.R;
+
 import java.util.ArrayList;
 
 /**
@@ -14,8 +17,8 @@ import java.util.ArrayList;
  */
 
 public class AssignmentAdapter extends BaseAdapter {
-    private Context mContext;
-    private LayoutInflater mInflater;
+    private Context               mContext;
+    private LayoutInflater        mInflater;
     private ArrayList<Assignment> mDataSource;
 
     public AssignmentAdapter(Context context, ArrayList<Assignment> items) {
@@ -62,9 +65,9 @@ public class AssignmentAdapter extends BaseAdapter {
 
         Assignment a = (Assignment) getItem(position);
 
-        nameTextView.setText(a.className);
-        titleTextView.setText(a.title);
-        descTextView.setText(a.description);
+        nameTextView.setText(a.getClassName());
+        titleTextView.setText(a.getTitle());
+        descTextView.setText(a.getDescription());
 
         return rowView;
     }
