@@ -1,5 +1,6 @@
 package com.orctech.dcdswarm;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -84,7 +85,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     }
     //region Date changing
     public void tomorrow(View view) {
-        changePortalDate(getInstance().tomorrow(portalDay.date));
+        startActivity(new Intent(this, BlockActivity.class));
+//        changePortalDate(getInstance().tomorrow(portalDay.date));
     }
     
     public void yesterday(View view) {

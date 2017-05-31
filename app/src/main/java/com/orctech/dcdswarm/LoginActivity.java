@@ -213,8 +213,8 @@ public class LoginActivity extends AppCompatActivity {
         mUsernameView.setText("");
         mPasswordView.setText("");
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(USERNAME_PARAMETER, c.username);
-        intent.putExtra(PASSWORD_PARAMETER, c.password);
+//        intent.putExtra(USERNAME_PARAMETER, c.username);
+//        intent.putExtra(PASSWORD_PARAMETER, c.password);
         startActivity(intent);
     }
     
