@@ -50,6 +50,8 @@ public class PortalDay {
         this.assignments = new ArrayList<>();
         String[] temp = StringCropper.cropExclusive(assignments, "assignments={[", "]}").replace("}", "").split("Assignment\\{");
         for (String a : temp) {
+            if(a == null)
+                continue;
             if (a.contains("name") || a.contains("title") || a.contains("description")) {
                 this.assignments.add(new Assignment(a));
             }
