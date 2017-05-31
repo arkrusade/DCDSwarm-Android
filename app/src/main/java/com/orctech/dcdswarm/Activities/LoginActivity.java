@@ -218,8 +218,8 @@ public class LoginActivity extends AppCompatActivity {
         mUsernameView.setText("");
         mPasswordView.setText("");
         Intent intent = new Intent(this, com.orctech.dcdswarm.Activities.MainActivity.class);
-        intent.putExtra(USERNAME_PARAMETER, c.getUsername());
-        intent.putExtra(PASSWORD_PARAMETER, c.getPassword());
+//      intent.putExtra(USERNAME_PARAMETER, c.getUsername());
+//      intent.putExtra(PASSWORD_PARAMETER, c.getPassword());
         startActivity(intent);
     }
     
