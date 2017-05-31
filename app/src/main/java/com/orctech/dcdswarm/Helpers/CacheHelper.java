@@ -1,8 +1,11 @@
-package com.orctech.dcdswarm;
+package com.orctech.dcdswarm.Helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import com.orctech.dcdswarm.Models.Login;
+import com.orctech.dcdswarm.Models.PortalDay;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -55,11 +58,11 @@ public class CacheHelper {
     }
     
     //region Login
-    Credentials getLogin(Context context) {
+    public Login getLogin(Context context) {
         String username, password;
         username = getFromPrefs(context, PREFS_LOGIN_USERNAME_KEY, null);
         password = getFromPrefs(context, PREFS_LOGIN_PASSWORD_KEY, null);
-        return new Credentials(username, password);
+        return new Login(username, password);
     }
     
     void storeLogin(Context context, String username, String password) {
@@ -67,18 +70,15 @@ public class CacheHelper {
         saveToPrefs(context, PREFS_LOGIN_PASSWORD_KEY, password);
     }
     
-    void storeLogin(Context context, Credentials login) {
-        storeLogin(context, login.username, login.password);
+    public void storeLogin(Context context, Login login) {
+        storeLogin(context, login.getUsername(), login.getPassword());
     }
     //endregion
     
-    Context context(Context c) {
-        return c;
-    }
     //region Cache
-    void storePortalDay(Context context, PortalDay day) {
+    public void storePortalDay(Context context, PortalDay day) {
         
-        File file = new File(context.getFilesDir(), dateFormat.format(day.date));
+        File file = new File(context.getFilesDir(), dateFormat.format(day.getDate()));
         try {
             ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file));
             outputStream.writeObject(day.toString());
@@ -88,10 +88,10 @@ public class CacheHelper {
             e.printStackTrace();
         }
         
-        saveToPrefs(context, dateFormat.format(day.date), day.assignmentsToString());
+        saveToPrefs(context, dateFormat.format(day.getDate()), day.assignmentsToString());
     }
     
-    PortalDay getPortalDay(Context context, Date date) {
+    public PortalDay getPortalDay(Context context, Date date) {
         StringBuilder text = new StringBuilder();
         try {
             String assignments = getFromPrefs(context, dateFormat.format(date), "");
@@ -103,24 +103,7 @@ public class CacheHelper {
             return PortalDay.missingDay(date);
             
         }
-//        try {
-//            return new PortalDay(text.toString());
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//            return PortalDay.missingDay(date);
-//        }
-        
-        
     }
     //endregion
-    
 }
 
-class Credentials {
-    String username, password;
-    
-    public Credentials(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-}

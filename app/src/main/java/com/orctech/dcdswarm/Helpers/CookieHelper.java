@@ -1,4 +1,4 @@
-package com.orctech.dcdswarm;
+package com.orctech.dcdswarm.Helpers;
 
 import java.io.IOException;
 import java.net.URL;
@@ -11,12 +11,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-public class CookieManager {
+public class CookieHelper {
 
     private Map store;
-    public static final CookieManager instance = new CookieManager();
+    public static final CookieHelper instance = new CookieHelper();
 
-    public static CookieManager getInstance() {
+    public static CookieHelper getInstance() {
         return instance;
     }
 
@@ -33,7 +33,7 @@ public class CookieManager {
 
     private DateFormat dateFormat;
 
-    public CookieManager() {
+    public CookieHelper() {
 
         store = new HashMap();
         dateFormat = new SimpleDateFormat(DATE_FORMAT);
@@ -185,7 +185,7 @@ public class CookieManager {
     }
 
     public static void main(String[] args) {
-        CookieManager cm = new CookieManager();
+        CookieHelper cm = new CookieHelper();
         try {
             URL url = new URL("http://www.hccp.org/test/cookieTest.jsp");
             URLConnection conn = url.openConnection();
