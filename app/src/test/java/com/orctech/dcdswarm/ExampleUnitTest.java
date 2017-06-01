@@ -27,4 +27,4 @@ public class ExampleUnitTest {
         assertNotEquals(newDate, DateExtension.getDateExtension().yesterday(newDate));
         assertEquals(newDate, (DateExtension.getDateExtension().changeDate(newDate,0)));
     }
-}`
+}
