@@ -164,7 +164,7 @@ public class LoginActivity extends AppCompatActivity {
                 System.out.println("Post parameters : " + urlParameters);
                 System.out.println("Response Code : " + responseCode);
                 
-                CookieHelper.getInstance().storeCookies(portal);
+                CookieHelper.getCookieHelper().storeCookies(portal);
                 
                 BufferedReader in = new BufferedReader(new InputStreamReader(portal.getInputStream()));
                 String inputLine;

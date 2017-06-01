@@ -65,7 +65,7 @@ public class PortalDay {
     
     @Override
     public String toString() {
-        return "PortalDay{" + "date=" + DateExtension.getInstance().formatSlashed.format(date) + ", " + assignmentsToString() + '}';
+        return "PortalDay{" + "date=" + DateExtension.getDateExtension().formatSlashed.format(date) + ", " + assignmentsToString() + '}';
     }
     
     public static PortalDay emptyDay(Date date) {

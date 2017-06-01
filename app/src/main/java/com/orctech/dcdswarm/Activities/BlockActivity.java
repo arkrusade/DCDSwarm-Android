@@ -1,8 +1,10 @@
-package com.orctech.dcdswarm;
+package com.orctech.dcdswarm.Activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import com.orctech.dcdswarm.R;
 
 public class BlockActivity extends AppCompatActivity {
 
