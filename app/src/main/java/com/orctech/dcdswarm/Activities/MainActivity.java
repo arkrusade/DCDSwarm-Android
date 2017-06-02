@@ -1,5 +1,6 @@
 package com.orctech.dcdswarm.Activities;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -58,10 +59,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         //        });
         //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
     //region Menu bar
-    
     public void goToBlockSchedule(View view) {
-        
+        startActivity(new Intent(this, BlockActivity.class));
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
