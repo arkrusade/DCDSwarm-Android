@@ -14,6 +14,7 @@ import com.orctech.dcdswarm.Adapters.AssignmentAdapter;
 import com.orctech.dcdswarm.Helpers.CacheHelper;
 import com.orctech.dcdswarm.Helpers.CookieHelper;
 import com.orctech.dcdswarm.Helpers.HtmlStringHelper;
+import com.orctech.dcdswarm.Models.AsyncResponse;
 import com.orctech.dcdswarm.Models.PortalDay;
 import com.orctech.dcdswarm.R;
 
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         setContentView(R.layout.activity_main);
         // Get the Intent that started this activity and extract the string
         
-        mListView = (ListView) findViewById(R.id.listView);
+        mListView = (ListView) findViewById(R.id.list_main);
         t = (Toolbar) findViewById(R.id.toolbar);
         t.setTitle("Date");
         
@@ -59,11 +60,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         //        });
         //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
-    //region Menu bar
+    
     public void goToBlockSchedule(View view) {
         startActivity(new Intent(this, BlockActivity.class));
     }
+    
+    //region Menu bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -376,6 +378,3 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     //    }
 }
 
-interface AsyncResponse {
-    void processFinish(String output);
-}

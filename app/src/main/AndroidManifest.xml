@@ -32,13 +32,13 @@
                 android:value=".Activities.LoginActivity" />
         </activity>
         <activity
-            android:name=".BlockActivity"
+            android:name=".Activities.BlockActivity"
             android:label="@string/title_activity_block"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".Activities.MainActivity"
             android:theme="@style/NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.orctech.dcdswarm.MainActivity"/>
+                android:value="com.orctech.dcdswarm.Activities.MainActivity"/>
         </activity>
     </application>
 

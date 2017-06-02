@@ -192,7 +192,12 @@ public class LoginActivity extends AppCompatActivity {
                     portal.disconnect();
             }
         }
-        
+    
+        @Override
+        protected void onPreExecute() {
+            showProgress(true);
+        }
+    
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
@@ -209,12 +214,12 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onCancelled() {
             mAuthTask = null;
-//            showProgress(false);
+            showProgress(false);
         }
     }
 
     private void showProgress(boolean b) {
-        mProgressView.
+        mProgressView.setVisibility((b ? View.VISIBLE : View.INVISIBLE));
     }
 
     public void successfulLogin() {

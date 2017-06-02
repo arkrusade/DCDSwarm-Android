@@ -7,9 +7,6 @@ import android.preference.PreferenceManager;
 import com.orctech.dcdswarm.Models.Login;
 import com.orctech.dcdswarm.Models.PortalDay;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -78,21 +75,20 @@ public class CacheHelper {
     //region Cache
     public void storePortalDay(Context context, PortalDay day) {
         
-        File file = new File(context.getFilesDir(), dateFormat.format(day.getDate()));
-        try {
-            ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file));
-            outputStream.writeObject(day.toString());
-            outputStream.flush();
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        File file = new File(context.getFilesDir(), dateFormat.format(day.getDate()));
+//        try {
+//            ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file));
+//            outputStream.writeObject(day.toString());
+//            outputStream.flush();
+//            outputStream.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         
         saveToPrefs(context, dateFormat.format(day.getDate()), day.assignmentsToString());
     }
     
     public PortalDay getPortalDay(Context context, Date date) {
-        StringBuilder text = new StringBuilder();
         try {
             String assignments = getFromPrefs(context, dateFormat.format(date), "");
             PortalDay day = new PortalDay(date);
