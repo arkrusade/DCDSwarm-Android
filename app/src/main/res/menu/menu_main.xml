@@ -12,7 +12,7 @@
     <item
         android:id="@+id/action_blocks"
         android:orderInCategory="200"
-        android:title="Block schedule"
+        android:title="@string/block_schedule"
         android:icon="@drawable/ic_menu_white_24dp"
         app:showAsAction="ifRoom"
         />

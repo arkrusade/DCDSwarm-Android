@@ -12,6 +12,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.orctech.dcdswarm.Helpers.CacheHelper;
@@ -50,8 +51,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+        mProgressView = (ProgressBar) findViewById(R.id.login_progress);
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
-
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -195,7 +196,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-//            showProgress(false);
+            showProgress(false);
             
             if (success) {
                 successfulLogin();
@@ -211,7 +212,11 @@ public class LoginActivity extends AppCompatActivity {
 //            showProgress(false);
         }
     }
-    
+
+    private void showProgress(boolean b) {
+        mProgressView.
+    }
+
     public void successfulLogin() {
         Login c = new Login( mUsernameView.getText().toString(), mPasswordView.getText().toString());
         CacheHelper.getInstance().storeLogin(this, c);
