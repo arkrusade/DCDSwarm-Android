@@ -17,7 +17,7 @@ public class CacheHelper {
     static final String PREFS_LOGIN_USERNAME_KEY = "__USERNAME__";
     static final String PREFS_LOGIN_PASSWORD_KEY = "__PASSWORD__";
     private static final CacheHelper instance = new CacheHelper();
-    private static final DateFormat dateFormat = DateExtension.getInstance().formatDashed;
+    private static final DateFormat dateFormat = DateExtension.getDateExtension().formatDashed;
     
     public static CacheHelper getInstance() {
         return instance;

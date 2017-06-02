@@ -6,14 +6,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Created by Justin Lee on 5/23/2017.
- */
 
 public class DateExtension {
     private static final DateExtension DATE_EXTENSION = new DateExtension();
     
-    public static DateExtension getInstance() {
+    public static DateExtension getDateExtension() {
         return DATE_EXTENSION;
     }
     

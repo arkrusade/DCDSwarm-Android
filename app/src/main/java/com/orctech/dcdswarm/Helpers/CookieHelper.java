@@ -14,10 +14,10 @@ import java.util.StringTokenizer;
 public class CookieHelper {
 
     private Map store;
-    public static final CookieHelper instance = new CookieHelper();
+    public static final CookieHelper COOKIE_HELPER = new CookieHelper();
 
-    public static CookieHelper getInstance() {
-        return instance;
+    public static CookieHelper getCookieHelper() {
+        return COOKIE_HELPER;
     }
 
     private static final String SET_COOKIE = "Set-Cookie";

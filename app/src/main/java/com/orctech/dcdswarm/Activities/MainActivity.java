@@ -12,7 +12,6 @@ import android.widget.ListView;
 import com.orctech.dcdswarm.Adapters.AssignmentAdapter;
 import com.orctech.dcdswarm.Helpers.CacheHelper;
 import com.orctech.dcdswarm.Helpers.CookieHelper;
-import com.orctech.dcdswarm.Helpers.DateExtension;
 import com.orctech.dcdswarm.Helpers.HtmlStringHelper;
 import com.orctech.dcdswarm.Models.PortalDay;
 import com.orctech.dcdswarm.R;
@@ -26,7 +25,7 @@ import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import static com.orctech.dcdswarm.Helpers.DateExtension.getInstance;
+import static com.orctech.dcdswarm.Helpers.DateExtension.getDateExtension;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
     ListView mListView;
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     }
     
     public void updateTable() {
-        t.setTitle(getInstance().formatWithDay.format(this.portalDay.getDate()));
+        t.setTitle(getDateExtension().formatWithDay.format(this.portalDay.getDate()));
         AssignmentAdapter adapter = new AssignmentAdapter(this, portalDay.getAssignments());
         mListView.setAdapter(adapter);
     }
@@ -125,19 +124,19 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     }
     
     public void tomorrow(View view) {
-        changePortalDate(getInstance().tomorrow(portalDay.getDate()));
+        changePortalDate(getDateExtension().tomorrow(portalDay.getDate()));
     }
     
     public void yesterday(View view) {
-        changePortalDate(getInstance().yesterday(portalDay.getDate()));
+        changePortalDate(getDateExtension().yesterday(portalDay.getDate()));
     }
     
     public void weekNext(View view) {
-        changePortalDate(getInstance().weekNext(portalDay.getDate()));
+        changePortalDate(getDateExtension().weekNext(portalDay.getDate()));
     }
     
     public void weekPrev(View view) {
-        changePortalDate(getInstance().weekPrev(portalDay.getDate()));
+        changePortalDate(getDateExtension().weekPrev(portalDay.getDate()));
     }
     
     public void today(View view) {
@@ -161,12 +160,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 requestDate = params[0];
                 
                 URL url = new URL(String.format(getString(R.string.URL_schedule_day) +
-                        "&start=%s&period=day", DateExtension.getInstance().formatSlashed.format(requestDate)));
+                        "&start=%s&period=day", getDateExtension().formatSlashed.format(requestDate)));
                 portal = (HttpURLConnection) url.openConnection();
                 portal.setRequestMethod("GET");
                 
                 portal.setConnectTimeout(3000);
-                CookieHelper.getInstance().setCookies(portal);
+                CookieHelper.getCookieHelper().setCookies(portal);
                 portal.setConnectTimeout(3000);
                 portal.setReadTimeout(3000);
                 portal.setDoInput(true);
@@ -174,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 //endregion
                 //region Response
                 int responseCode = portal.getResponseCode();
-                CookieHelper.getInstance().storeCookies(portal);
+                CookieHelper.getCookieHelper().storeCookies(portal);
                 
                 BufferedReader in = new BufferedReader(new InputStreamReader(portal
                         .getInputStream()));
