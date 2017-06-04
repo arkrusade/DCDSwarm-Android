@@ -13,7 +13,9 @@ import android.widget.ListView;
 import com.orctech.dcdswarm.Adapters.AssignmentAdapter;
 import com.orctech.dcdswarm.Helpers.CacheHelper;
 import com.orctech.dcdswarm.Helpers.CookieHelper;
+import com.orctech.dcdswarm.Helpers.DateExtension;
 import com.orctech.dcdswarm.Helpers.HtmlStringHelper;
+import com.orctech.dcdswarm.Models.AsyncResponse;
 import com.orctech.dcdswarm.Models.PortalDay;
 import com.orctech.dcdswarm.R;
 
@@ -29,6 +31,7 @@ import javax.net.ssl.HttpsURLConnection;
 import static com.orctech.dcdswarm.Helpers.DateExtension.getDateExtension;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
+    public static final String DATE_KEY = "DATE_KEY";
     ListView mListView;
     PortalDay portalDay = new PortalDay();
     AsyncTask request;
@@ -40,30 +43,22 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         setContentView(R.layout.activity_main);
         // Get the Intent that started this activity and extract the string
         
-        mListView = (ListView) findViewById(R.id.listView);
+        mListView = (ListView) findViewById(R.id.list_main);
         t = (Toolbar) findViewById(R.id.toolbar);
         t.setTitle("Date");
         
         setSupportActionBar(t);
         
         changePortalDate(new Date());
-        
-        //
-        //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        //        fab.setOnClickListener(new View.OnClickListener() {
-        //            @Override
-        //            public void onClick(View view) {
-        //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-        //                        .setAction("Action", null).show();
-        //            }
-        //        });
-        //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
-    //region Menu bar
+    
     public void goToBlockSchedule(View view) {
-        startActivity(new Intent(this, BlockActivity.class));
+        Intent intent = new Intent(this, BlockActivity.class);
+        intent.putExtra(DATE_KEY, DateExtension.getDateExtension().formatSlashed.format(portalDay.getDate()));
+        startActivity(intent);
     }
+    
+    //region Menu bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -376,6 +371,3 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     //    }
 }
 
-interface AsyncResponse {
-    void processFinish(String output);
-}
