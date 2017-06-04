@@ -13,6 +13,7 @@ import android.widget.ListView;
 import com.orctech.dcdswarm.Adapters.AssignmentAdapter;
 import com.orctech.dcdswarm.Helpers.CacheHelper;
 import com.orctech.dcdswarm.Helpers.CookieHelper;
+import com.orctech.dcdswarm.Helpers.DateExtension;
 import com.orctech.dcdswarm.Helpers.HtmlStringHelper;
 import com.orctech.dcdswarm.Models.AsyncResponse;
 import com.orctech.dcdswarm.Models.PortalDay;
@@ -30,6 +31,7 @@ import javax.net.ssl.HttpsURLConnection;
 import static com.orctech.dcdswarm.Helpers.DateExtension.getDateExtension;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
+    public static final String DATE_KEY = "DATE_KEY";
     ListView mListView;
     PortalDay portalDay = new PortalDay();
     AsyncTask request;
@@ -48,21 +50,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         setSupportActionBar(t);
         
         changePortalDate(new Date());
-        
-        //
-        //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        //        fab.setOnClickListener(new View.OnClickListener() {
-        //            @Override
-        //            public void onClick(View view) {
-        //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-        //                        .setAction("Action", null).show();
-        //            }
-        //        });
-        //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
     
     public void goToBlockSchedule(View view) {
-        startActivity(new Intent(this, BlockActivity.class));
+        Intent intent = new Intent(this, BlockActivity.class);
+        intent.putExtra(DATE_KEY, DateExtension.getDateExtension().formatSlashed.format(portalDay.getDate()));
+        startActivity(intent);
     }
     
     //region Menu bar

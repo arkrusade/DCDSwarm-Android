@@ -1,6 +1,7 @@
 package com.orctech.dcdswarm.Helpers;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -28,7 +29,7 @@ public class DateExtension {
         return c.getTime();
     }
     
-    Date changeMonth(Date date, int diff) {
+    public Date changeMonth(Date date, int diff) {
         c.setTime(date);
         c.add(Calendar.MONTH, diff);
         return c.getTime();
@@ -50,12 +51,22 @@ public class DateExtension {
         return changeDate(date, -7);
     }
     
-    Date monthNext(Date date) {
+    public Date monthNext(Date date) {
         return changeMonth(date, 1);
     }
     
-    Date monthPrev(Date date) {
+    public Date monthPrev(Date date) {
         return changeMonth(date, -1);
     }
     
+    public Date fromExcelDate(int num)
+    {
+        try {
+            Date reference = DateExtension.getDateExtension().formatSlashed.parse("1/1/1900");
+            return DateExtension.getDateExtension().changeDate(reference, num-2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.orctech.dcdswarm.Models.BlockSchedule;
 import com.orctech.dcdswarm.Models.Login;
 import com.orctech.dcdswarm.Models.PortalDay;
 
@@ -13,6 +14,9 @@ import java.util.Date;
 public class CacheHelper {
     static final String PREFS_LOGIN_USERNAME_KEY = "__USERNAME__";
     static final String PREFS_LOGIN_PASSWORD_KEY = "__PASSWORD__";
+    static final String PREFS_ASSIGNMENTS_KEY = "__ASSIGNMENTS__";
+    static final String PREFS_BLOCKS_KEY = "__BLOCKS__";
+    
     private static final CacheHelper instance = new CacheHelper();
     private static final DateFormat dateFormat = DateExtension.getDateExtension().formatDashed;
     
@@ -85,12 +89,12 @@ public class CacheHelper {
 //            e.printStackTrace();
 //        }
         
-        saveToPrefs(context, dateFormat.format(day.getDate()), day.assignmentsToString());
+        saveToPrefs(context, PREFS_ASSIGNMENTS_KEY+dateFormat.format(day.getDate()), day.assignmentsToString());
     }
     
     public PortalDay getPortalDay(Context context, Date date) {
         try {
-            String assignments = getFromPrefs(context, dateFormat.format(date), "");
+            String assignments = getFromPrefs(context, PREFS_ASSIGNMENTS_KEY+dateFormat.format(date), "");
             PortalDay day = new PortalDay(date);
             day.setAssignments(assignments);
             return day;
@@ -100,6 +104,17 @@ public class CacheHelper {
             
         }
     }
+    
+    
     //endregion
+    public void storeBlockSchedule(Context context, BlockSchedule schedule) {
+        saveToPrefs(context, PREFS_BLOCKS_KEY+dateFormat.format(schedule.getDate()), schedule.blocksToString());
+    }
+    public BlockSchedule getBlockSchedule(Context context, Date date) {
+        String blocks = getFromPrefs(context, PREFS_BLOCKS_KEY+dateFormat.format(date), "");
+        if(blocks.equals(""))
+            return BlockSchedule.emptySchedule(date);
+        return new BlockSchedule(date, blocks);
+    }
 }
 

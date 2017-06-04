@@ -5,11 +5,11 @@
                 android:layout_height="match_parent">
     
     <TextView
-        android:id="@+id/list_block_times"
+        android:id="@+id/list_block_name"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_toStartOf="@+id/list_block_colon"
-        tools:text="Times" />
+        tools:text="Name" />
     
     <TextView
         android:id="@+id/list_block_colon"
@@ -21,11 +21,11 @@
         android:text="@string/spaced_colon" />
     
     <TextView
-        android:id="@+id/list_block_name"
+        android:id="@+id/list_block_times"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_toEndOf="@id/list_block_colon"
-        tools:text="Block name" />
+        tools:text="Times" />
 
 
 </RelativeLayout>
