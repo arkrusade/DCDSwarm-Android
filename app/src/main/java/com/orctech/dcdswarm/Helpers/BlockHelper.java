@@ -49,7 +49,7 @@ public class BlockHelper {
                 for (int j = 1; j < blocks.length(); j++) {
                     currBlock = new Block(blocks.get(j).toString(), times.get(j).toString());
                     
-                    if (!currBlock.getName().equals("") || currBlock.getTimes().equals("")) {
+                    if (!(currBlock.getName().equals("") && currBlock.getTimes().equals(""))) {
                         blocksList.add(currBlock);
                     }
                 }

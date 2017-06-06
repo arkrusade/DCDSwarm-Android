@@ -28,6 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import static com.orctech.dcdswarm.Helpers.StringCropper.cropExclusive;
 
@@ -42,9 +43,9 @@ public class LoginActivity extends AppCompatActivity {
     
     // UI references.
     private AutoCompleteTextView mUsernameView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
+    private EditText             mPasswordView;
+    private View                 mProgressView;
+    private View                 mLoginFormView;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +129,7 @@ public class LoginActivity extends AppCompatActivity {
         
         private final String mUsername;
         private final String mPassword;
+        private String message = getString(R.string.error_incorrect_password);
         HttpURLConnection portal;
         
         UserLoginTask(String username, String password) {
@@ -137,7 +139,6 @@ public class LoginActivity extends AppCompatActivity {
         
         @Override
         protected Boolean doInBackground(Void... params) {
-            //TODO: attempt authentication against a network service.
             
             try {
                 URL url = new URL(getString(R.string.URL_schedule_request));
@@ -146,8 +147,8 @@ public class LoginActivity extends AppCompatActivity {
                 portal.setRequestMethod("POST");
                 portal.setConnectTimeout(30000);
                 portal.setInstanceFollowRedirects(false);
-                
-                String urlParameters = String.format("do=login&p=413&username=%s&password=%s&submit=login", mUsername, mPassword);
+
+                String urlParameters = String.format("do=login&p=413&username=%s&password=%s&submit=login", URLEncoder.encode(mUsername, "UTF-8"), URLEncoder.encode(mPassword, "UTF-8"));
                 
                 portal.setRequestProperty("Content-Length", Integer.toString(urlParameters.length()));
                 
@@ -176,7 +177,14 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 in.close();
                 
-                return checkLoggedIn(response.toString(), portal);
+                if (!checkLoggedIn(response.toString(), portal)) {
+                    if (portal.getResponseCode() >= 300 || portal.getResponseCode() < 200) {
+                        message = portal.getResponseMessage();
+                    }
+                    return false;
+                } else {
+                    return true;
+                }
                 
             } catch (ProtocolException e) {
                 e.printStackTrace();
@@ -188,16 +196,17 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
                 return false;
             } finally {
-                if (portal != null)
+                if (portal != null) {
                     portal.disconnect();
+                }
             }
         }
-    
+        
         @Override
         protected void onPreExecute() {
             showProgress(true);
         }
-    
+        
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
@@ -206,8 +215,7 @@ public class LoginActivity extends AppCompatActivity {
             if (success) {
                 successfulLogin();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                unsuccessfulLogin(message);
             }
         }
         
@@ -217,26 +225,33 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(false);
         }
     }
-
+    
+    private void unsuccessfulLogin(String message) {
+        CacheHelper.getInstance().clearLogin(this);
+        mPasswordView.setText("");
+        mPasswordView.setError(message);
+        mPasswordView.requestFocus();
+    }
+    
     private void showProgress(boolean b) {
         mProgressView.setVisibility((b ? View.VISIBLE : View.INVISIBLE));
     }
-
+    
     public void successfulLogin() {
-        Login c = new Login( mUsernameView.getText().toString(), mPasswordView.getText().toString());
+        Login c = new Login(mUsernameView.getText().toString(), mPasswordView.getText().toString());
         CacheHelper.getInstance().storeLogin(this, c);
         mUsernameView.setText("");
         mPasswordView.setText("");
         Intent intent = new Intent(this, com.orctech.dcdswarm.Activities.MainActivity.class);
-//      intent.putExtra(USERNAME_PARAMETER, c.getUsername());
-//      intent.putExtra(PASSWORD_PARAMETER, c.getPassword());
+        //      intent.putExtra(USERNAME_PARAMETER, c.getUsername());
+        //      intent.putExtra(PASSWORD_PARAMETER, c.getPassword());
         startActivity(intent);
     }
     
     static boolean checkLoggedIn(String htmlString, HttpURLConnection conn) {
         try {
             int code = conn.getResponseCode();
-            if(code == 200) {
+            if (code == 200) {
                 String loginCheck = cropExclusive(htmlString, "<meta name=\"description\" content=\"", " - Detroit");
                 if (loginCheck == null) {
                     return false;
@@ -251,8 +266,7 @@ public class LoginActivity extends AppCompatActivity {
                         return true;
                 }
                 return false;
-            }
-            else if (code == 302 && conn.getHeaderField("Location").equals("https://www.dcds.edu/page.cfm?p=8256")) {
+            } else if (code == 302 && conn.getHeaderField("Location").equals("https://www.dcds.edu/page.cfm?p=8256")) {
                 return true;
             }
         } catch (IOException e) {

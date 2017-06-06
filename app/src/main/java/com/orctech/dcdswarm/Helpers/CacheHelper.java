@@ -116,5 +116,9 @@ public class CacheHelper {
             return BlockSchedule.emptySchedule(date);
         return new BlockSchedule(date, blocks);
     }
+    
+    public void clearLogin(Context context) {
+        storeLogin(context, "", "");
+    }
 }
 
