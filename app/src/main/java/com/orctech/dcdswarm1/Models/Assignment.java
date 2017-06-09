@@ -1,6 +1,6 @@
-package com.orctech.dcdswarm.Models;
+package com.orctech.dcdswarm1.Models;
 
-import com.orctech.dcdswarm.Helpers.StringCropper;
+import com.orctech.dcdswarm1.Helpers.StringCropper;
 
 /**
  * Created by justinjlee99 on 5/11/2017.

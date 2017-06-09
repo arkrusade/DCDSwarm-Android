@@ -1,6 +1,6 @@
-package com.orctech.dcdswarm.Models;
+package com.orctech.dcdswarm1.Models;
 
-import com.orctech.dcdswarm.Helpers.StringCropper;
+import com.orctech.dcdswarm1.Helpers.StringCropper;
 
 /**
  * Created by Justin Lee on 6/2/2017.
@@ -36,9 +36,9 @@ public class Block /*implements Serializable*/ {
     }
     
     public Block(String name, String times) {
-        if(name.equals("0"))
+        if(name.equals("0") || name.equals("null"))
             name = "";
-        if(times.equals("0"))
+        if(times.equals("0") || times.equals("null"))
             times = "";
         this.name = name;
         this.times = times;

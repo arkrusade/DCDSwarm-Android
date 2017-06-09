@@ -1,24 +1,24 @@
-package com.orctech.dcdswarm.Activities;
+package com.orctech.dcdswarm1.Activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.orctech.dcdswarm.Helpers.CacheHelper;
-import com.orctech.dcdswarm.Helpers.CookieHelper;
-import com.orctech.dcdswarm.Models.Login;
-import com.orctech.dcdswarm.R;
+import com.orctech.dcdswarm1.Helpers.CacheHelper;
+import com.orctech.dcdswarm1.Helpers.CookieHelper;
+import com.orctech.dcdswarm1.Models.Login;
+import com.orctech.dcdswarm1.R;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -28,8 +28,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.net.URLEncoder;
 
-import static com.orctech.dcdswarm.Helpers.StringCropper.cropExclusive;
+import static com.orctech.dcdswarm1.Helpers.StringCropper.cropExclusive;
 
 /**
  * A login screen that offers login via username/password.
@@ -41,10 +42,11 @@ public class LoginActivity extends AppCompatActivity {
     private UserLoginTask mAuthTask = null;
     
     // UI references.
-    private AutoCompleteTextView mUsernameView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
+    private EditText mUsernameView;
+    private EditText             mPasswordView;
+    private View                 mProgressView;
+    private View                 mLoginFormView;
+    Toolbar t;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mProgressView = (ProgressBar) findViewById(R.id.login_progress);
-        mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
+        mUsernameView = (EditText) findViewById(R.id.username);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -75,6 +77,9 @@ public class LoginActivity extends AppCompatActivity {
         
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    
+        t = (Toolbar) findViewById(com.orctech.dcdswarm1.R.id.toolbar_login);
+        t.setTitle(getString(R.string.app_name));
         autoLogin();
     }
     
@@ -82,7 +87,8 @@ public class LoginActivity extends AppCompatActivity {
         Login c = CacheHelper.getInstance().getLogin(this);
         mUsernameView.setText(c.getUsername());
         mPasswordView.setText(c.getPassword());
-        attemptLogin();
+        if(!c.isEmpty())
+            attemptLogin();
     }
     
     private void attemptLogin() {
@@ -128,6 +134,7 @@ public class LoginActivity extends AppCompatActivity {
         
         private final String mUsername;
         private final String mPassword;
+        private String message = getString(R.string.error_incorrect_password);
         HttpURLConnection portal;
         
         UserLoginTask(String username, String password) {
@@ -137,7 +144,6 @@ public class LoginActivity extends AppCompatActivity {
         
         @Override
         protected Boolean doInBackground(Void... params) {
-            //TODO: attempt authentication against a network service.
             
             try {
                 URL url = new URL(getString(R.string.URL_schedule_request));
@@ -146,8 +152,8 @@ public class LoginActivity extends AppCompatActivity {
                 portal.setRequestMethod("POST");
                 portal.setConnectTimeout(30000);
                 portal.setInstanceFollowRedirects(false);
-                
-                String urlParameters = String.format("do=login&p=413&username=%s&password=%s&submit=login", mUsername, mPassword);
+
+                String urlParameters = String.format("do=login&p=413&username=%s&password=%s&submit=login", URLEncoder.encode(mUsername, "UTF-8"), URLEncoder.encode(mPassword, "UTF-8"));
                 
                 portal.setRequestProperty("Content-Length", Integer.toString(urlParameters.length()));
                 
@@ -176,7 +182,14 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 in.close();
                 
-                return checkLoggedIn(response.toString(), portal);
+                if (!checkLoggedIn(response.toString(), portal)) {
+                    if (portal.getResponseCode() >= 300 || portal.getResponseCode() < 200) {
+                        message = portal.getResponseMessage();
+                    }
+                    return false;
+                } else {
+                    return true;
+                }
                 
             } catch (ProtocolException e) {
                 e.printStackTrace();
@@ -188,16 +201,17 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
                 return false;
             } finally {
-                if (portal != null)
+                if (portal != null) {
                     portal.disconnect();
+                }
             }
         }
-    
+        
         @Override
         protected void onPreExecute() {
             showProgress(true);
         }
-    
+        
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
@@ -206,8 +220,7 @@ public class LoginActivity extends AppCompatActivity {
             if (success) {
                 successfulLogin();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                unsuccessfulLogin(message);
             }
         }
         
@@ -217,26 +230,33 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(false);
         }
     }
-
+    
+    private void unsuccessfulLogin(String message) {
+        CacheHelper.getInstance().clearLogin(this);
+        mPasswordView.setText("");
+        mPasswordView.setError(message);
+        mPasswordView.requestFocus();
+    }
+    
     private void showProgress(boolean b) {
         mProgressView.setVisibility((b ? View.VISIBLE : View.INVISIBLE));
     }
-
+    
     public void successfulLogin() {
-        Login c = new Login( mUsernameView.getText().toString(), mPasswordView.getText().toString());
+        Login c = new Login(mUsernameView.getText().toString(), mPasswordView.getText().toString());
         CacheHelper.getInstance().storeLogin(this, c);
         mUsernameView.setText("");
         mPasswordView.setText("");
-        Intent intent = new Intent(this, com.orctech.dcdswarm.Activities.MainActivity.class);
-//      intent.putExtra(USERNAME_PARAMETER, c.getUsername());
-//      intent.putExtra(PASSWORD_PARAMETER, c.getPassword());
+        Intent intent = new Intent(this, com.orctech.dcdswarm1.Activities.MainActivity.class);
+        //      intent.putExtra(USERNAME_PARAMETER, c.getUsername());
+        //      intent.putExtra(PASSWORD_PARAMETER, c.getPassword());
         startActivity(intent);
     }
     
     static boolean checkLoggedIn(String htmlString, HttpURLConnection conn) {
         try {
             int code = conn.getResponseCode();
-            if(code == 200) {
+            if (code == 200) {
                 String loginCheck = cropExclusive(htmlString, "<meta name=\"description\" content=\"", " - Detroit");
                 if (loginCheck == null) {
                     return false;
@@ -251,8 +271,7 @@ public class LoginActivity extends AppCompatActivity {
                         return true;
                 }
                 return false;
-            }
-            else if (code == 302 && conn.getHeaderField("Location").equals("https://www.dcds.edu/page.cfm?p=8256")) {
+            } else if (code == 302 && conn.getHeaderField("Location").equals("https://www.dcds.edu/page.cfm?p=8256")) {
                 return true;
             }
         } catch (IOException e) {

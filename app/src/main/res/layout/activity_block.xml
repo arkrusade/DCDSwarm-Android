@@ -5,7 +5,7 @@
                                              android:layout_width="match_parent"
                                              android:layout_height="match_parent"
                                              android:fitsSystemWindows="true"
-                                             tools:context="com.orctech.dcdswarm.Activities.BlockActivity">
+                                             tools:context="com.orctech.dcdswarm1.Activities.BlockActivity">
     
     <include
         android:id="@+id/toolbar_block"

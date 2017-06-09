@@ -1,4 +1,4 @@
-package com.orctech.dcdswarm.Activities;
+package com.orctech.dcdswarm1.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,17 +7,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ListView;
 
-import com.orctech.dcdswarm.Adapters.BlockAdapter;
-import com.orctech.dcdswarm.Helpers.BlockHelper;
-import com.orctech.dcdswarm.Helpers.CacheHelper;
-import com.orctech.dcdswarm.Helpers.DateExtension;
-import com.orctech.dcdswarm.Models.BlockSchedule;
-import com.orctech.dcdswarm.R;
+import com.orctech.dcdswarm1.Adapters.BlockAdapter;
+import com.orctech.dcdswarm1.Helpers.BlockHelper;
+import com.orctech.dcdswarm1.Helpers.CacheHelper;
+import com.orctech.dcdswarm1.Helpers.DateExtension;
+import com.orctech.dcdswarm1.Models.BlockSchedule;
+import com.orctech.dcdswarm1.R;
 
 import java.text.ParseException;
 import java.util.Date;
 
-import static com.orctech.dcdswarm.Helpers.DateExtension.getDateExtension;
+import static com.orctech.dcdswarm1.Helpers.DateExtension.getDateExtension;
+
 
 public class BlockActivity extends AppCompatActivity {
     ListView mListView;

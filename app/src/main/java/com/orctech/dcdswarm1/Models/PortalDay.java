@@ -1,7 +1,7 @@
-package com.orctech.dcdswarm.Models;
+package com.orctech.dcdswarm1.Models;
 
-import com.orctech.dcdswarm.Helpers.DateExtension;
-import com.orctech.dcdswarm.Helpers.StringCropper;
+import com.orctech.dcdswarm1.Helpers.DateExtension;
+import com.orctech.dcdswarm1.Helpers.StringCropper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
