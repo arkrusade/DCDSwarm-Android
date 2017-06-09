@@ -1,24 +1,24 @@
-package com.orctech.dcdswarm.Activities;
+package com.orctech.dcdswarm1.Activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.orctech.dcdswarm.Helpers.CacheHelper;
-import com.orctech.dcdswarm.Helpers.CookieHelper;
-import com.orctech.dcdswarm.Models.Login;
-import com.orctech.dcdswarm.R;
+import com.orctech.dcdswarm1.Helpers.CacheHelper;
+import com.orctech.dcdswarm1.Helpers.CookieHelper;
+import com.orctech.dcdswarm1.Models.Login;
+import com.orctech.dcdswarm1.R;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -30,7 +30,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import static com.orctech.dcdswarm.Helpers.StringCropper.cropExclusive;
+import static com.orctech.dcdswarm1.Helpers.StringCropper.cropExclusive;
 
 /**
  * A login screen that offers login via username/password.
@@ -42,10 +42,11 @@ public class LoginActivity extends AppCompatActivity {
     private UserLoginTask mAuthTask = null;
     
     // UI references.
-    private AutoCompleteTextView mUsernameView;
+    private EditText mUsernameView;
     private EditText             mPasswordView;
     private View                 mProgressView;
     private View                 mLoginFormView;
+    Toolbar t;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mProgressView = (ProgressBar) findViewById(R.id.login_progress);
-        mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
+        mUsernameView = (EditText) findViewById(R.id.username);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -76,6 +77,9 @@ public class LoginActivity extends AppCompatActivity {
         
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    
+        t = (Toolbar) findViewById(com.orctech.dcdswarm1.R.id.toolbar_login);
+        t.setTitle(getString(R.string.app_name));
         autoLogin();
     }
     
@@ -83,7 +87,8 @@ public class LoginActivity extends AppCompatActivity {
         Login c = CacheHelper.getInstance().getLogin(this);
         mUsernameView.setText(c.getUsername());
         mPasswordView.setText(c.getPassword());
-        attemptLogin();
+        if(!c.isEmpty())
+            attemptLogin();
     }
     
     private void attemptLogin() {
@@ -242,7 +247,7 @@ public class LoginActivity extends AppCompatActivity {
         CacheHelper.getInstance().storeLogin(this, c);
         mUsernameView.setText("");
         mPasswordView.setText("");
-        Intent intent = new Intent(this, com.orctech.dcdswarm.Activities.MainActivity.class);
+        Intent intent = new Intent(this, com.orctech.dcdswarm1.Activities.MainActivity.class);
         //      intent.putExtra(USERNAME_PARAMETER, c.getUsername());
         //      intent.putExtra(PASSWORD_PARAMETER, c.getPassword());
         startActivity(intent);

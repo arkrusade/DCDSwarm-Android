@@ -1,4 +1,4 @@
-package com.orctech.dcdswarm.Activities;
+package com.orctech.dcdswarm1.Activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -10,14 +10,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-import com.orctech.dcdswarm.Adapters.AssignmentAdapter;
-import com.orctech.dcdswarm.Helpers.CacheHelper;
-import com.orctech.dcdswarm.Helpers.CookieHelper;
-import com.orctech.dcdswarm.Helpers.DateExtension;
-import com.orctech.dcdswarm.Helpers.HtmlStringHelper;
-import com.orctech.dcdswarm.Models.AsyncResponse;
-import com.orctech.dcdswarm.Models.PortalDay;
-import com.orctech.dcdswarm.R;
+import com.orctech.dcdswarm1.Adapters.AssignmentAdapter;
+import com.orctech.dcdswarm1.Helpers.CacheHelper;
+import com.orctech.dcdswarm1.Helpers.CookieHelper;
+import com.orctech.dcdswarm1.Helpers.DateExtension;
+import com.orctech.dcdswarm1.Helpers.HtmlStringHelper;
+import com.orctech.dcdswarm1.Models.AsyncResponse;
+import com.orctech.dcdswarm1.Models.PortalDay;
+import com.orctech.dcdswarm1.R;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,7 +28,7 @@ import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import static com.orctech.dcdswarm.Helpers.DateExtension.getDateExtension;
+import static com.orctech.dcdswarm1.Helpers.DateExtension.getDateExtension;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
     public static final String DATE_KEY = "DATE_KEY";
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     }
     
     public void goToBlockSchedule(View view) {
-        Intent intent = new Intent(this, BlockActivity.class);
+        Intent intent = new Intent(this, com.orctech.dcdswarm1.Activities.BlockActivity.class);
         intent.putExtra(DATE_KEY, DateExtension.getDateExtension().formatSlashed.format(portalDay.getDate()));
         startActivity(intent);
     }
@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         
         //noinspection SimplifiableIfStatement
         switch (id) {
-            case R.id.action_settings:
-                return true;
+//            case R.id.action_settings:
+//                return true;
             case R.id.action_blocks:
                 goToBlockSchedule(item.getActionView());
                 return true;

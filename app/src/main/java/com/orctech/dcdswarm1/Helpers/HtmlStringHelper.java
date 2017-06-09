@@ -1,7 +1,7 @@
-package com.orctech.dcdswarm.Helpers;
+package com.orctech.dcdswarm1.Helpers;
 
-import com.orctech.dcdswarm.Models.Assignment;
-import com.orctech.dcdswarm.Models.PortalDay;
+import com.orctech.dcdswarm1.Models.Assignment;
+import com.orctech.dcdswarm1.Models.PortalDay;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -9,9 +9,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.orctech.dcdswarm.Helpers.StringCropper.crop;
-import static com.orctech.dcdswarm.Helpers.StringCropper.cropEndExclusive;
-import static com.orctech.dcdswarm.Helpers.StringCropper.cropExclusive;
+import static com.orctech.dcdswarm1.Helpers.StringCropper.crop;
+import static com.orctech.dcdswarm1.Helpers.StringCropper.cropEndExclusive;
+import static com.orctech.dcdswarm1.Helpers.StringCropper.cropExclusive;
 
 
 /**
@@ -163,9 +163,9 @@ public class HtmlStringHelper {
                 //TODO: organize activities by class and use id
                 //region Description parsing
                 activityString = cropExclusive(activityString, "</span>");
-                if (activityString.contains("eventnotes\">"))
+                if (activityString.contains("notes\">"))
                 {
-                    activityDesc = cropExclusive(activityString, "eventnotes\">", "</span>");
+                    activityDesc = cropExclusive(activityString, "notes\">", "</span>");
                     hasB = cropEndExclusive(activityDesc, "<br");//if has <br, crop. Since 'br' comes before 'a', skip a if it does
                     if (hasB != null) {
                         activityDesc = hasB;

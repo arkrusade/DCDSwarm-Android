@@ -1,9 +1,9 @@
-package com.orctech.dcdswarm.Helpers;
+package com.orctech.dcdswarm1.Helpers;
 
 import android.content.Context;
 
-import com.orctech.dcdswarm.Models.Block;
-import com.orctech.dcdswarm.Models.BlockSchedule;
+import com.orctech.dcdswarm1.Models.Block;
+import com.orctech.dcdswarm1.Models.BlockSchedule;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +43,7 @@ public class BlockHelper {
                 JSONArray blocks = (JSONArray) goal.get(blocksKey);
                 JSONArray times = (JSONArray) goal.get(timesKey);
                 int excelNum = Integer.valueOf(String.valueOf(blocks.get(0)));
-                schedule = new BlockSchedule(DateExtension.getDateExtension().fromExcelDate(excelNum));
+                schedule = new BlockSchedule(com.orctech.dcdswarm1.Helpers.DateExtension.getDateExtension().fromExcelDate(excelNum));
                 
                 ArrayList<Block> blocksList = new ArrayList<>();
                 for (int j = 1; j < blocks.length(); j++) {

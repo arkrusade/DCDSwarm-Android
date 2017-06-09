@@ -1,4 +1,4 @@
-package com.orctech.dcdswarm.Adapters;
+package com.orctech.dcdswarm1.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,9 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
-import com.orctech.dcdswarm.Models.Assignment;
-import com.orctech.dcdswarm.R;
+import com.orctech.dcdswarm1.R;
+import com.orctech.dcdswarm1.Models.Assignment;
 
 import java.util.ArrayList;
 

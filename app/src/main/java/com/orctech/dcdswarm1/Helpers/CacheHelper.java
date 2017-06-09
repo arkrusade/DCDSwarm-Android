@@ -1,12 +1,12 @@
-package com.orctech.dcdswarm.Helpers;
+package com.orctech.dcdswarm1.Helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.orctech.dcdswarm.Models.BlockSchedule;
-import com.orctech.dcdswarm.Models.Login;
-import com.orctech.dcdswarm.Models.PortalDay;
+import com.orctech.dcdswarm1.Models.BlockSchedule;
+import com.orctech.dcdswarm1.Models.Login;
+import com.orctech.dcdswarm1.Models.PortalDay;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -18,7 +18,7 @@ public class CacheHelper {
     static final String PREFS_BLOCKS_KEY = "__BLOCKS__";
     
     private static final CacheHelper instance = new CacheHelper();
-    private static final DateFormat dateFormat = DateExtension.getDateExtension().formatDashed;
+    private static final DateFormat dateFormat = com.orctech.dcdswarm1.Helpers.DateExtension.getDateExtension().formatDashed;
     
     public static CacheHelper getInstance() {
         return instance;

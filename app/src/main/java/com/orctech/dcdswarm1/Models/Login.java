@@ -1,4 +1,4 @@
-package com.orctech.dcdswarm.Models;
+package com.orctech.dcdswarm1.Models;
 
 /**
  * Created by Justin Lee on 5/30/2017.
@@ -25,5 +25,11 @@ public class Login {
     public Login(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+    
+    public boolean isEmpty() {
+        if(username == null || password == null)
+            return true;
+        return (getPassword().equals("") && getUsername().equals(""));
     }
 }
