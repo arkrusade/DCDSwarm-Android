@@ -4,15 +4,15 @@
                                              xmlns:tools="http://schemas.android.com/tools"
                                              android:layout_width="match_parent"
                                              android:layout_height="match_parent"
+                                             android:background="@color/colorPrimaryDark"
                                              android:fitsSystemWindows="true"
-                                             tools:context="com.orctech.dcdswarm1.Activities.MainActivity"
-                                             android:background="@color/colorPrimaryDark" >
-    
+                                             tools:context="com.orctech.dcdswarm1.Activities.MainActivity">
+
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar"
         />
-    
+
     <include
         android:id="@+id/list"
         layout="@layout/content_main"
@@ -27,8 +27,8 @@
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1" />
-    
+        tools:layout_constraintTop_creator="1"/>
+
     <LinearLayout
         style="?buttonBarButtonStyle"
         android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/list"
         app:layout_constraintVertical_bias="0.2">
-    
+
         <Button
             android:id="@+id/weekPrev"
             style="@style/Widget.AppCompat.Button.Borderless"
@@ -48,8 +48,10 @@
             android:layout_height="wrap_content"
             android:onClick="weekPrev"
             android:text="@string/weekPrev_Button"
-            app:layout_constraintLeft_toLeftOf="parent" />
-    
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
         <Button
             android:id="@+id/yesterday"
             style="@style/Widget.AppCompat.Button.Borderless"
@@ -57,18 +59,19 @@
             android:layout_height="wrap_content"
             android:onClick="yesterday"
             android:text="@string/yesterday_Button"
-            />
-    
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"/>
+
         <Button
             android:id="@+id/today"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            
             android:onClick="today"
             android:text="@string/today"
-            />
-    
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"/>
+
         <Button
             android:id="@+id/tomorrow"
             style="@style/Widget.AppCompat.Button.Borderless"
@@ -76,8 +79,9 @@
             android:layout_height="wrap_content"
             android:onClick="tomorrow"
             android:text="@string/tomorrow_Button"
-            />
-    
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"/>
+
         <Button
             android:id="@+id/weekNext"
             style="@style/Widget.AppCompat.Button.Borderless"
@@ -85,8 +89,10 @@
             android:layout_height="wrap_content"
             android:onClick="weekNext"
             android:text="@string/weekNext_Button"
-            app:layout_constraintRight_toRightOf="parent" />
-    
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            app:layout_constraintRight_toRightOf="parent"/>
+
     </LinearLayout>
 
 

@@ -16,7 +16,9 @@ public class CacheHelper {
     static final String PREFS_LOGIN_PASSWORD_KEY = "__PASSWORD__";
     static final String PREFS_ASSIGNMENTS_KEY = "__ASSIGNMENTS__";
     static final String PREFS_BLOCKS_KEY = "__BLOCKS__";
-    
+    static final String PREFS_FILE_DOWNLOADED_KEY = "__DOWNLOADED__";
+    static final String PREFS_TRUE = "TRUE";
+    static final String PREFS_FALSE = "FALSE";
     private static final CacheHelper instance = new CacheHelper();
     private static final DateFormat dateFormat = com.orctech.dcdswarm1.Helpers.DateExtension.getDateExtension().formatDashed;
     
@@ -24,6 +26,16 @@ public class CacheHelper {
         return instance;
     }
     
+
+    public void downloadedFileRef(Context context, String fileRef) {
+        saveToPrefs(context, PREFS_FILE_DOWNLOADED_KEY+fileRef, PREFS_TRUE);
+    }
+    public boolean isFileRefDownloaded(Context context, String fileRef) {
+        if(PREFS_TRUE.equals(getFromPrefs(context, PREFS_FILE_DOWNLOADED_KEY+fileRef, PREFS_FALSE))) {
+            return true;
+        }
+        return false;
+    }
     /**
      * Called to save supplied value in shared preferences against given key.
      *
@@ -31,7 +43,6 @@ public class CacheHelper {
      * @param key     Key of value to save against
      * @param value   Value to save
      */
-    
     private void saveToPrefs(Context context, String key, String value) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         final SharedPreferences.Editor editor = prefs.edit();

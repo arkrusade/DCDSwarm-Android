@@ -134,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
         
         private final String mUsername;
         private final String mPassword;
-        private String message = getString(R.string.error_incorrect_password);
+        private String message = getString(R.string.error_failed_login);
         HttpURLConnection portal;
         
         UserLoginTask(String username, String password) {
@@ -233,7 +233,6 @@ public class LoginActivity extends AppCompatActivity {
     
     private void unsuccessfulLogin(String message) {
         CacheHelper.getInstance().clearLogin(this);
-        mPasswordView.setText("");
         mPasswordView.setError(message);
         mPasswordView.requestFocus();
     }
